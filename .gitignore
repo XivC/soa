@@ -37,4 +37,5 @@ build/
 ### Mac OS ###
 .DS_Store
 
-ctl/db.properties
+**/db.properties
+
