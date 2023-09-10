@@ -1,4 +1,4 @@
-package ru.ifmo.soa.service1.service1;
+package ru.ifmo.soa.service1.api;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
