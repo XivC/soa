@@ -1,8 +1,9 @@
-package ru.ifmo.soa.service1.model;
+package ru.ifmo.soa.service1.persons.model;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import ru.ifmo.soa.service1.persons.model.Country;
 
 @Getter
 @Setter

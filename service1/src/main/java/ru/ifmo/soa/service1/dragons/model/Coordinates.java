@@ -1,4 +1,4 @@
-package ru.ifmo.soa.service1.model;
+package ru.ifmo.soa.service1.dragons.model;
 
 import lombok.Builder;
 import lombok.Getter;

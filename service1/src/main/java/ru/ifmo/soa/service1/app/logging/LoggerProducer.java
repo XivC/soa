@@ -1,4 +1,4 @@
-package ru.ifmo.soa.service1.logging;
+package ru.ifmo.soa.service1.app.logging;
 
 
 import jakarta.enterprise.inject.Produces;

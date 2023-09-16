@@ -1,8 +1,8 @@
-package ru.ifmo.soa.service1.db;
+package ru.ifmo.soa.service1.app.db;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -50,9 +50,10 @@ public class DBConnectionManager {
 
     private void setupDB(){
         BasicDataSource dataSource = new BasicDataSource();
+        dataSource.setDriverClassName("org.postgresql.Driver");
         dataSource.setUrl(this.dbConnectionUrl);
         dataSource.setInitialSize(this.maxConnections);
-        dataSource.setMaxActive(this.maxConnections);
+        dataSource.setMaxTotal(this.maxConnections);
         this.dataSource = dataSource;
     }
 
