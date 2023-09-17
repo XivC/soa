@@ -8,7 +8,7 @@ export class Dragon {
         creationDate,
         age,
         color,
-        characterId,
+        character,
         type,
         killerId
     ) {
@@ -19,7 +19,7 @@ export class Dragon {
         this.creationDate = creationDate;
         this.age = age;
         this.color = color;
-        this.characterId = characterId;
+        this.character = character;
         this.type = type;
         this.killerId = killerId;
     }
