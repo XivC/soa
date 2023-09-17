@@ -4,8 +4,6 @@ package ru.ifmo.soa.dragons.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +14,13 @@ import ru.ifmo.soa.app.sql.filter.InvalidFilter;
 import ru.ifmo.soa.app.sql.order.Order;
 import ru.ifmo.soa.app.validation.ValidatedData;
 import ru.ifmo.soa.app.validation.ValidationError;
-import ru.ifmo.soa.dragons.api.schema.CreateOrUpdateDragonRequest;
+import ru.ifmo.soa.dragons.api.schema.CreateDragonRequest;
 import ru.ifmo.soa.dragons.api.schema.ListOfDragonsResponse;
+import ru.ifmo.soa.dragons.api.schema.SumResponse;
+import ru.ifmo.soa.dragons.api.schema.UpdateDragonRequest;
 import ru.ifmo.soa.dragons.api.validation.CreateDragonRequestValidator;
+import ru.ifmo.soa.dragons.api.validation.UpdateDragonRequestValidator;
+import ru.ifmo.soa.dragons.model.Color;
 import ru.ifmo.soa.dragons.model.Dragon;
 import ru.ifmo.soa.dragons.model.DragonType;
 import ru.ifmo.soa.dragons.service.*;
@@ -34,6 +36,9 @@ public class DragonView {
 
     @Autowired
     CreateDragonRequestValidator createDragonRequestValidator;
+
+    @Autowired
+    UpdateDragonRequestValidator updateDragonRequestValidator;
 
     @Autowired
     DragonCreator dragonCreator;
@@ -55,8 +60,8 @@ public class DragonView {
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            CreateOrUpdateDragonRequest request = mapper.readValue(createDragonRequestString, CreateOrUpdateDragonRequest.class);
-            ValidatedData<CreateOrUpdateDragonRequest, CreateDragonRequestValidator> validatedData = new ValidatedData<>(request, createDragonRequestValidator);
+            CreateDragonRequest request = mapper.readValue(createDragonRequestString, CreateDragonRequest.class);
+            ValidatedData<CreateDragonRequest, CreateDragonRequestValidator> validatedData = new ValidatedData<>(request, createDragonRequestValidator);
             Dragon dragon = dragonCreator.create(validatedData);
             return ResponseEntity.status(200).body(dragon);
 
@@ -109,7 +114,25 @@ public class DragonView {
     @GetMapping(value = "/count-by-type")
     public ResponseEntity<?> countByType(@RequestParam("type") DragonType type) throws ServiceError{
 
-        return ResponseEntity.ok().body(dragonUtils.countDragonsByType(type));
+        return ResponseEntity.ok().body(new SumResponse(dragonUtils.countDragonsByType(type)));
+
+    }
+
+    @GetMapping(value = "/filter-by-color")
+    public ResponseEntity<?> countByType(
+            @RequestParam("color") Color color,
+            @RequestParam(value = "limit", required = false) Integer limit,
+            @RequestParam(value = "offset", required = false) Integer offset
+    ) throws ServiceError {
+
+        return ResponseEntity.ok().body(new ListOfDragonsResponse(dragonUtils.filterByColor(color, limit, offset)));
+
+    }
+
+    @GetMapping(value = "/sum-age")
+    public ResponseEntity<?> sumAge() throws ServiceError {
+
+        return ResponseEntity.ok().body(new SumResponse(dragonUtils.sumAge()));
 
     }
 
@@ -126,7 +149,7 @@ public class DragonView {
     @PutMapping(value = "/{dragonId}")
     public ResponseEntity<?> update(
             @RequestParam("dragon")  final String updateDragonRequestString,
-            @RequestParam("dragonId") Long dragonId
+            @PathVariable("dragonId") Long dragonId
     ) throws ServiceError {
 
         ObjectMapper mapper = new ObjectMapper();
@@ -136,8 +159,8 @@ public class DragonView {
             if (mbDragon.isEmpty())
                 return ResponseEntity.notFound().build();
 
-            CreateOrUpdateDragonRequest request = mapper.readValue(updateDragonRequestString, CreateOrUpdateDragonRequest.class);
-            ValidatedData<CreateOrUpdateDragonRequest, CreateDragonRequestValidator> validatedData = new ValidatedData<>(request, createDragonRequestValidator);
+            UpdateDragonRequest request = mapper.readValue(updateDragonRequestString, UpdateDragonRequest.class);
+            ValidatedData<UpdateDragonRequest, UpdateDragonRequestValidator> validatedData = new ValidatedData<>(request, updateDragonRequestValidator);
 
             Dragon updated = dragonUpdater.update(validatedData, mbDragon.get());
 
