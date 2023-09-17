@@ -17,12 +17,12 @@
     </option>
     <option name="ignoredFiles">
       <set>
-        <option value="$APPLICATION_CONFIG_DIR$/extensions/restservice/pom.xml" />
         <option value="$PROJECT_DIR$/rest/awdqawwadawdawd/pom.xml" />
+        <option value="$APPLICATION_CONFIG_DIR$/extensions/restservice/pom.xml" />
       </set>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="ProjectType">
