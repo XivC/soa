@@ -11,4 +11,4 @@ conf:
 	cp ctl/db.properties service1/src/main/resources/db.properties
 
 migrate:
-	cd ctl && python migrate.py
+	cd ctl && python3 migrate.py
