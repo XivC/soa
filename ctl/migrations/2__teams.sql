@@ -1,0 +1,15 @@
+CREATE TABLE IF NOT EXISTS Caves (
+    id BIGSERIAL PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS Teams (
+    id BIGSERIAL PRIMARY KEY,
+    start_cave_id BIGINT NOT NULL REFERENCES Caves(id)
+
+);
+
+CREATE TABLE IF NOT EXISTS TeamMembers (
+    id BIGSERIAL PRIMARY KEY,
+    killer_id VARCHAR(47) NOT NULL REFERENCES Persons(passport_id),
+    team_id BIGINT NOT NULL REFERENCES Caves(id)
+);
