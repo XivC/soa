@@ -2,19 +2,19 @@ package ru.ifmo.soa.service1.dragons.api.validation;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import ru.ifmo.soa.service1.dragons.api.schema.CreateDragonRequest;
+import ru.ifmo.soa.service1.dragons.api.schema.CreateOrUpdateDragonRequest;
 import ru.ifmo.soa.service1.app.validation.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RequestScoped
-public class CreateDragonRequestValidator implements Validator<CreateDragonRequest> {
+public class CreateDragonRequestValidator implements Validator<CreateOrUpdateDragonRequest> {
 
     @Inject
     CoordinatesValidator coordinatesValidator;
     
-    public List<String> validate(CreateDragonRequest req) {
+    public List<String> validate(CreateOrUpdateDragonRequest req) {
 
         List<String> errors = new ArrayList<>();
 

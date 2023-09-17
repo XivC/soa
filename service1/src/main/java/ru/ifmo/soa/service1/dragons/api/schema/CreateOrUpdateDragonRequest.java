@@ -11,7 +11,7 @@ import ru.ifmo.soa.service1.dragons.model.DragonType;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class CreateDragonRequest{
+public class CreateOrUpdateDragonRequest {
 
     String name;
     Coordinates coordinates;

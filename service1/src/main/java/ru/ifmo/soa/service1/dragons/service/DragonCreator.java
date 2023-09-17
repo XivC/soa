@@ -5,7 +5,7 @@ import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import ru.ifmo.soa.service1.app.service.ServiceError;
 import ru.ifmo.soa.service1.app.validation.ValidatedData;
-import ru.ifmo.soa.service1.dragons.api.schema.CreateDragonRequest;
+import ru.ifmo.soa.service1.dragons.api.schema.CreateOrUpdateDragonRequest;
 import ru.ifmo.soa.service1.dragons.model.Dragon;
 import ru.ifmo.soa.service1.dragons.repository.DragonRepository;
 
@@ -19,9 +19,9 @@ public class DragonCreator {
 
     @Inject
     DragonRepository dragonRepository;
-    public Dragon create(ValidatedData<CreateDragonRequest, ?> validatedData) throws ServiceError {
+    public Dragon create(ValidatedData<CreateOrUpdateDragonRequest, ?> validatedData) throws ServiceError {
 
-        CreateDragonRequest data = validatedData.getData();
+        CreateOrUpdateDragonRequest data = validatedData.getData();
 
         Dragon dragon = Dragon.builder()
                 .name(data.getName())
