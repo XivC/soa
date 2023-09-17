@@ -26,19 +26,13 @@ def migrate():
                 exec_migration(cursor, file)
                 connection.commit()
         cursor.close()
+    except Exception as ex:
+        print(ex)
+        raise ex
     finally:
         connection.close()
 
 
 if __name__ == '__main__':
-    #migrate()
-    import xml.dom.minidom
+    migrate()
 
-
-
-    resp = requests.get("""http://localhost:8080/service1-1/api/dragons?limit=1&order=[{"key": "id", "orderType": "DESC"}, {"key": "name", "orderType": "ASC"}]""")
-
-    dom = xml.dom.minidom.parseString(resp.text)
-    pretty_xml_as_string = dom.toprettyxml()
-
-    print(pretty_xml_as_string)

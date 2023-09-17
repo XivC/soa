@@ -3,7 +3,7 @@
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/demo" />
-    <file type="web" url="file://$PROJECT_DIR$/service1" />
+    <file type="web" url="file://$PROJECT_DIR$/killer" />
   </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
@@ -13,6 +13,7 @@
         <option value="$PROJECT_DIR$/rest/pom.xml" />
         <option value="$APPLICATION_CONFIG_DIR$/extensions/restservice/pom.xml" />
         <option value="$PROJECT_DIR$/rest/awdqawwadawdawd/pom.xml" />
+        <option value="$PROJECT_DIR$/killer/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
