@@ -100,6 +100,21 @@ public class DragonRepository {
 
     }
 
+    public Integer countByType(DragonType type) throws SQLException{
+
+        String sql = "SELECT COUNT(*) FROM dragons WHERE type = ?";
+        Connection connection = dbConnectionManager.getConnection();
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, type.toString());
+        statement.execute();
+        ResultSet resultSet = statement.getResultSet();
+        resultSet.next();
+        return resultSet.getInt(1);
+
+
+
+    }
+
     private void update(Dragon dragon) throws SQLException {
 
         String sql = "UPDATE dragons SET name = ?, coordinate_x = ?, coordinate_y = ?, age = ?, color = ?, type = ?, character = ?, killer_id = ?" +

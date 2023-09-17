@@ -4,6 +4,8 @@ package ru.ifmo.soa.dragons.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +17,11 @@ import ru.ifmo.soa.app.sql.order.Order;
 import ru.ifmo.soa.app.validation.ValidatedData;
 import ru.ifmo.soa.app.validation.ValidationError;
 import ru.ifmo.soa.dragons.api.schema.CreateOrUpdateDragonRequest;
+import ru.ifmo.soa.dragons.api.schema.ListOfDragonsResponse;
 import ru.ifmo.soa.dragons.api.validation.CreateDragonRequestValidator;
 import ru.ifmo.soa.dragons.model.Dragon;
-import ru.ifmo.soa.dragons.service.DragonCreator;
-import ru.ifmo.soa.dragons.service.DragonDeleter;
-import ru.ifmo.soa.dragons.service.DragonGetter;
-import ru.ifmo.soa.dragons.service.DragonUpdater;
+import ru.ifmo.soa.dragons.model.DragonType;
+import ru.ifmo.soa.dragons.service.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -45,6 +46,9 @@ public class DragonView {
 
     @Autowired
     DragonDeleter dragonDeleter;
+
+    @Autowired
+    DragonUtils dragonUtils;
 
     @PostMapping(value = "/")
     public ResponseEntity<?> create(@RequestParam("dragon") final String createDragonRequestString) throws ServiceError {
@@ -88,9 +92,10 @@ public class DragonView {
                 orders = mapper.readValue(orderString, new TypeReference<List<Order>>() {
                 });
 
+
             List<Dragon> dragons = dragonGetter.getDragons(filters, orders, limit, offset);
 
-            return ResponseEntity.ok().body(dragons);
+            return ResponseEntity.ok().body(new ListOfDragonsResponse(dragons));
 
 
         } catch (JsonProcessingException ex) {
@@ -98,6 +103,14 @@ public class DragonView {
         } catch (ValidationError error) {
             return ResponseEntity.badRequest().body(error.getErrors());
         }
+    }
+
+
+    @GetMapping(value = "/count-by-type")
+    public ResponseEntity<?> countByType(@RequestParam("type") DragonType type) throws ServiceError{
+
+        return ResponseEntity.ok().body(dragonUtils.countDragonsByType(type));
+
     }
 
 
