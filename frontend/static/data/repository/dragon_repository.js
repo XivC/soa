@@ -14,12 +14,12 @@ export class DragonRepository {
                 'sort': JSON.stringify(sorts)
             },
             'GET',
-            (data) => callback(data['dragons']['dragon'].map((item) => new Dragon(
+            (data) => callback(data['Dragons']['Dragon'].map((item) => new Dragon(
                 item['id'],
                 item['name'],
                 item['coordinates']['x'],
                 item['coordinates']['y'],
-                item['creationDate'],
+                `${item['creationDate'][0]}:${item['creationDate'][1]}:${item['creationDate'][2]}`,
                 item['age'],
                 item['color'],
                 item['character'],
@@ -33,15 +33,17 @@ export class DragonRepository {
         request_crud(
             'dragons/',
             {
-                'name': fields['name'],
-                'coordinates': {
-                    'x': fields['x'],
-                    'y': fields['y']
-                },
-                'age': fields['age'],
-                'color': fields['color'],
-                'character': fields['character'],
-                'type': fields['type']
+                'dragon': JSON.stringify({
+                    'name': fields['name'],
+                    'coordinates': {
+                        'x': fields['x'],
+                        'y': fields['y']
+                    },
+                    'age': fields['age'],
+                    'color': fields['color'],
+                    'character': fields['character'],
+                    'type': fields['type']
+                })
             },
             'POST',
             (_) => callback(true)
@@ -52,15 +54,17 @@ export class DragonRepository {
         request_crud(
             'dragons/' + id,
             {
-                'name': fields['name'],
-                'coordinates': {
-                    'x': fields['x'],
-                    'y': fields['y']
-                },
-                'age': fields['age'],
-                'color': fields['color'],
-                'character': fields['character'],
-                'type': fields['type']
+                'dragon': JSON.stringify({
+                    'name': fields['name'],
+                    'coordinates': {
+                        'x': fields['x'],
+                        'y': fields['y']
+                    },
+                    'age': fields['age'],
+                    'color': fields['color'],
+                    'character': fields['character'],
+                    'type': fields['type']
+                })
             },
             'PUT',
             (_) => callback(true)

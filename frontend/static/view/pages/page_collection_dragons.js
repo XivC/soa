@@ -47,8 +47,7 @@ export class PageCollectionDragons extends PageCollection {
         `;
     }
 
-    cardClick(item) {
-        super.cardClick(item);
+    navigateToItem(item) {
         this.app.pushPage(new PageObjectDragon(this.app, item))
     }
 }

@@ -22,7 +22,7 @@ export class PageCollection extends Page {
             '</div>';
         this.cardContainer = document.getElementById("cardContainer");
         this.loadingIndicator = document.getElementById("loadingIndicator")
-        document.getElementById("create-button").onclick = () => {}
+        document.getElementById("create-button").onclick = () => this.navigateToItem(null)
         let that = this
         function isElementInViewport(el) {
             const rect = el.getBoundingClientRect();
@@ -63,7 +63,7 @@ export class PageCollection extends Page {
                 const card = document.createElement("div");
                 card.classList.add("card");
                 card.innerHTML = this.cardInnerHtml(item)
-                card.onclick = () => this.cardClick(item)
+                card.onclick = () => this.navigateToItem(item)
                 that.cardContainer.appendChild(card);
             });
             if (items.length === 0) {
@@ -79,7 +79,5 @@ export class PageCollection extends Page {
 
     cardInnerHtml(item) {}
 
-    cardClick(item) {}
-
-    createClick() {}
+    navigateToItem(item) {}
 }

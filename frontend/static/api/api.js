@@ -2,31 +2,12 @@
 
 
 function xmlToJson(xml) {
-    const obj = {};
-
-    // If the node is a text node, return its value
-    if (xml.nodeType === 3) {
-        return xml.nodeValue.trim();
-    }
-
-    // If the node is an element
-    if (xml.nodeType === 1) {
-        // Initialize the object with attributes
-        for (let j = 0; j < xml.attributes.length; j++) {
-            const attribute = xml.attributes.item(j);
-            obj[attribute.nodeName] = attribute.nodeValue;
-        }
-    }
-
     // Process child nodes
     if (xml.hasChildNodes()) {
+        const obj = {};
         for (let i = 0; i < xml.childNodes.length; i++) {
             const item = xml.childNodes.item(i);
-            if (item.nodeName === '#text') {
-                return item.nodeValue
-            }
             const nodeName = item.nodeName;
-
             if (typeof obj[nodeName] === "undefined") {
                 obj[nodeName] = xmlToJson(item);
             } else {
@@ -38,9 +19,11 @@ function xmlToJson(xml) {
                 obj[nodeName].push(xmlToJson(item));
             }
         }
+        return obj;
+    } else {
+        if (xml.nodeValue == null) return "";
+        return xml.nodeValue.trim();
     }
-
-    return obj;
 }
 
 
@@ -49,9 +32,11 @@ function request(host, path, params, method, callback) {
 
 // Define the URL you want to make the request to
     let url = host + path;
-    if (method === 'GET') {
+    //if (method === 'GET') {
+    if (Object.keys(params).length !== 0) {
         url += '?' + new URLSearchParams(params).toString();
     }
+   // }
     console.log(url, method, params)
 
     xhr.open(method, url)
@@ -62,13 +47,12 @@ function request(host, path, params, method, callback) {
     xhr.onload = function () {
         if (xhr.status >= 200 && xhr.status < 300) {
             // The request was successful; parse the XML response
-            const xmlText = xhr.responseText;
-
+            const xmlText = xhr.responseText.replace(/^\s+/gm, '');
             // Use DOMParser to parse the XML into a Document object
             const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+            const xmlDoc = parser.parseFromString(xmlText, 'application/xml');
             const data = xmlToJson(xmlDoc)
-            console.log(xmlDoc)
+            console.log(xmlDoc.childNodes.item(0).childNodes)
             console.log(data)
             callback(data)
         } else {
@@ -82,15 +66,16 @@ function request(host, path, params, method, callback) {
         console.error('Network request failed');
     };
 
-    if (method === 'PUT' || method === 'POST') {
-        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        console.log("body " + JSON.stringify(params))
-        xhr.send(JSON.stringify(params));
-    } else {
-        xhr.send();
-    }
+    // if (method === 'PUT' || method === 'POST') {
+    //     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    //     console.log("body " + JSON.stringify(params))
+    //     xhr.send(JSON.stringify(params));
+    // } else {
+    //     xhr.send();
+    // }
+    xhr.send()
 }
 
 export function request_crud(path, params, method, callback) {
-    return request('http://localhost:8080/service1-1/api/', path, params, method, callback)
+    return request('http://localhost:8080/api/', path, params, method, callback)
 }
