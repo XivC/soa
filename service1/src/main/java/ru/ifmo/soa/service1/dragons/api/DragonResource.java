@@ -88,7 +88,7 @@ public class DragonResource {
                 });
 
             if (orderString != null)
-                orders = mapper.readValue(orderString, new TypeReference<>() {
+                orders = mapper.readValue(orderString, new TypeReference<List<Order>>() {
                 });
 
             List<Dragon> dragons = dragonGetter.getDragons(filters, orders, limit, offset);

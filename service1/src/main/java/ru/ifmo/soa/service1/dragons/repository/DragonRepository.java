@@ -21,12 +21,32 @@ public class DragonRepository {
 
     @Inject
     DBConnectionManager connectionManager;
-    public void save(Dragon dragon) throws SQLException{
+
+    final String BASE_GET_SQL = "SELECT\n" +
+            "    dragons.id as id,\n" +
+            "    dragons.name as name,\n" +
+            "    dragons.coordinate_x as coordinate_x,\n" +
+            "    dragons.coordinate_y as coordinate_y,\n" +
+            "    dragons.creation_date as creation_date,\n" +
+            "    dragons.age as age,\n" +
+            "    dragons.color as color,\n" +
+            "    dragons.type as type,\n" +
+            "    dragons.character as character,\n" +
+            "    dragons.killer_id as killer_id,\n" +
+            "    persons.passport_id,\n" +
+            "    persons.name as person_name,\n" +
+            "    persons.height,\n" +
+            "    persons.weight,\n" +
+            "    persons.nationality " +
+            "FROM dragons LEFT JOIN persons  ON dragons.killer_id = persons.passport_id ";
+
+    public void save(Dragon dragon) throws SQLException {
         if (dragon.getId() == null) create(dragon);
         else update(dragon);
 
     }
-public void delete(Dragon dragon) throws SQLException {
+
+    public void delete(Dragon dragon) throws SQLException {
         if (dragon.getId() == null) return;
 
         String sql = "DELETE FROM Dragons WHERE id = ?;";
@@ -36,7 +56,7 @@ public void delete(Dragon dragon) throws SQLException {
         statement.execute();
         connection.close();
 
-}
+    }
 
     private void create(Dragon dragon) throws SQLException {
 
@@ -62,15 +82,15 @@ public void delete(Dragon dragon) throws SQLException {
         connection.close();
     }
 
-    public List<Dragon> getList(FilterSet filterSet, OrderSet orderSet, Integer limit, Integer offset) throws SQLException{
+    public List<Dragon> getList(FilterSet filterSet, OrderSet orderSet, Integer limit, Integer offset) throws SQLException {
 
-        String sql = (new SQLBuilder()).base( "SELECT * FROM dragons").filter(filterSet).order(orderSet).build();
+        String sql = (new SQLBuilder()).base(BASE_GET_SQL).filter(filterSet).order(orderSet).limit(limit).offset(offset).build();
         Connection connection = connectionManager.getConnection();
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.execute();
         LinkedList<Dragon> dragons = new LinkedList<>();
         ResultSet resultSet = statement.getResultSet();
-        while (resultSet.next()){
+        while (resultSet.next()) {
             dragons.add(fromRow(resultSet));
         }
         connection.close();
@@ -97,10 +117,10 @@ public void delete(Dragon dragon) throws SQLException {
         connection.close();
     }
 
-    public Optional<Dragon> getById(Long id) throws SQLException{
-        String sql = "SELECT * FROM Dragons JOIN Persons ON killer_id = passport_id WHERE id = ?";
+    public Optional<Dragon> getById(Long id) throws SQLException {
+
         Connection connection = connectionManager.getConnection();
-        PreparedStatement statement = connection.prepareStatement(sql);
+        PreparedStatement statement = connection.prepareStatement(BASE_GET_SQL + "WHERE id = ?");
         statement.setLong(1, id);
         statement.execute();
         ResultSet resultSet = statement.getResultSet();
@@ -109,7 +129,7 @@ public void delete(Dragon dragon) throws SQLException {
         return Optional.ofNullable(dragon);
     }
 
-    Dragon fromRow(ResultSet resultSet) throws SQLException{
+    Dragon fromRow(ResultSet resultSet) throws SQLException {
         Dragon.DragonBuilder dragonBuilder = Dragon.builder();
         Person.PersonBuilder personBuilder = Person.builder();
         Coordinates.CoordinatesBuilder coordinatesBuilder = Coordinates.builder();
@@ -134,7 +154,7 @@ public void delete(Dragon dragon) throws SQLException {
             dragonBuilder.killer(
                     personBuilder
                             .passportID(resultSet.getString("passport_id"))
-                            .name(resultSet.getString("persons.name"))
+                            .name(resultSet.getString("person_name"))
                             .height(resultSet.getLong("height"))
                             .weight(resultSet.getDouble("weight"))
                             .nationality(Country.valueOf(resultSet.getString("nationality")))

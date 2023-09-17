@@ -64,10 +64,11 @@ public class SQLBuilder {
         ArrayList<String> orderStrings = new ArrayList<>();
         for (Order order: orderSet.getOrders()){
             orderStrings.add(
-                    String.format("\"%s\" '%s'", order.getKey(), order.getOrderType().toString())
+                    String.format("\"%s\" %s", order.getKey(), order.getOrderType().toString())
             );
         }
         sql.append(String.join(",", orderStrings));
+        sql.append(" ");
         return sql.toString();
     }
 
