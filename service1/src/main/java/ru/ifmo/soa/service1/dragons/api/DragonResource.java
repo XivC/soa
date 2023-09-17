@@ -49,7 +49,7 @@ public class DragonResource {
 
     @POST
     @Produces("application/xml")
-    public Response createDragon(@QueryParam("dragon") @NotNull final String createDragonRequestString) throws ServiceError {
+    public Response create(@QueryParam("dragon") @NotNull final String createDragonRequestString) throws ServiceError {
 
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -120,7 +120,7 @@ public class DragonResource {
     @Path("/{dragonId}")
     @Produces(MediaType.APPLICATION_XML)
     public Response update(
-            @QueryParam("dragon") @NotNull final String createDragonRequestString,
+            @QueryParam("dragon") @NotNull final String updateDragonRequestString,
             @PathParam("dragonId") @NotNull Long dragonId
     ) throws ServiceError {
 
@@ -131,7 +131,7 @@ public class DragonResource {
             if (mbDragon.isEmpty())
                 return Response.status(Response.Status.NOT_FOUND).build();
 
-            CreateOrUpdateDragonRequest request = mapper.readValue(createDragonRequestString, CreateOrUpdateDragonRequest.class);
+            CreateOrUpdateDragonRequest request = mapper.readValue(updateDragonRequestString, CreateOrUpdateDragonRequest.class);
             ValidatedData<CreateOrUpdateDragonRequest, CreateDragonRequestValidator> validatedData = new ValidatedData<>(request, createDragonRequestValidator);
 
             Dragon updated = dragonUpdater.update(validatedData, mbDragon.get());

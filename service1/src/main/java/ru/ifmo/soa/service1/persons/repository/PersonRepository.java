@@ -14,19 +14,20 @@ public class PersonRepository {
 
     @Inject
     DBConnectionManager connectionManager;
-public void delete(Person person) throws SQLException {
+
+    public void delete(Person person) throws SQLException {
         if (person.getPassportID() == null) return;
-        
+
         String sql = "DELETE FROM Persons WHERE passport_id = ?;";
         Connection connection = connectionManager.getConnection();
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, person.getPassportID());
         statement.execute();
         connection.close();
-        
-}
 
-    private void create(Person person) throws SQLException {
+    }
+
+    public void create(Person person) throws SQLException {
 
         String sql = "INSERT INTO " +
                 "Persons (passport_id, name, height, weight, nationality)" +
@@ -42,7 +43,7 @@ public void delete(Person person) throws SQLException {
         connection.close();
     }
 
-    private void update(Person person) throws SQLException {
+    public void update(Person person) throws SQLException {
 
         String sql = "UPDATE persons SET name = ?, height = ?, weight = ?, nationality = ?" +
                 "WHERE passport_id = ?;";
@@ -57,7 +58,7 @@ public void delete(Person person) throws SQLException {
         connection.close();
     }
 
-    public Optional<Person> getById(String passportId) throws SQLException{
+    public Optional<Person> getById(String passportId) throws SQLException {
         String sql = "SELECT * FROM Persons  WHERE passport_id = ?";
         Connection connection = connectionManager.getConnection();
         PreparedStatement statement = connection.prepareStatement(sql);
@@ -69,7 +70,7 @@ public void delete(Person person) throws SQLException {
         return Optional.ofNullable(person);
     }
 
-    Person fromRow(ResultSet resultSet) throws SQLException{
+    Person fromRow(ResultSet resultSet) throws SQLException {
         Person.PersonBuilder personBuilder = Person.builder();
         personBuilder
                 .passportID(resultSet.getString("passport_id"))
