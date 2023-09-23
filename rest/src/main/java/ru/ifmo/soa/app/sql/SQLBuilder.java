@@ -42,7 +42,7 @@ public class SQLBuilder {
                     String.format("\"%s\"='%s'", filter.getKey(), filter.getValue().toString())
             );
         }
-        sql.append(String.join(",", filtersStrings));
+        sql.append(String.join(" AND ", filtersStrings));
         return sql.toString();
     }
 
