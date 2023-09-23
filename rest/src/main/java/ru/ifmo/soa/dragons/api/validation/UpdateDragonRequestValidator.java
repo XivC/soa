@@ -23,7 +23,6 @@ public class UpdateDragonRequestValidator implements Validator<UpdateDragonReque
         if (req.getCoordinates() == null) errors.add("Coordinates required");
             else  errors.addAll(coordinatesValidator.validate(req.getCoordinates()));
         if (req.getAge() != null && req.getAge() <= 0) errors.add("Age must be greater than 0");
-        if (req.getCharacter() == null) errors.add("Dragon character is required");
 
         return errors;
 

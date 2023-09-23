@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.ifmo.soa.app.schema.ErrorResponse;
 import ru.ifmo.soa.app.service.ServiceError;
 import ru.ifmo.soa.app.sql.filter.Filter;
 import ru.ifmo.soa.app.sql.filter.InvalidFilter;
@@ -56,7 +57,7 @@ public class DragonView {
     DragonUtils dragonUtils;
 
     @PostMapping(value = "/")
-    public ResponseEntity<?> create(@RequestParam("dragon") final String createDragonRequestString) throws ServiceError {
+    public ResponseEntity<?> create(@RequestParam("dragon") String createDragonRequestString) throws ServiceError {
 
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -68,7 +69,7 @@ public class DragonView {
         } catch (JsonProcessingException ex) {
             return ResponseEntity.status(400).build();
         } catch (ValidationError error) {
-            return ResponseEntity.status(400).body(error.getErrors());
+            return ResponseEntity.status(400).body(new ErrorResponse(error.getErrors()));
         }
 
 
@@ -90,7 +91,7 @@ public class DragonView {
             ObjectMapper mapper = new ObjectMapper();
 
             if (filterString != null)
-                filters = mapper.readValue(filterString, new TypeReference<>() {
+                filters = mapper.readValue(filterString, new TypeReference<List<Filter<String>>>() {
                 });
 
             if (orderString != null)
@@ -106,19 +107,19 @@ public class DragonView {
         } catch (JsonProcessingException ex) {
             return ResponseEntity.badRequest().build();
         } catch (ValidationError error) {
-            return ResponseEntity.badRequest().body(error.getErrors());
+            return ResponseEntity.badRequest().body(new ErrorResponse(error.getErrors()));
         }
     }
 
 
-    @GetMapping(value = "/count-by-type")
+    @GetMapping(value = "/count-by-type/")
     public ResponseEntity<?> countByType(@RequestParam("type") DragonType type) throws ServiceError{
 
         return ResponseEntity.ok().body(new SumResponse(dragonUtils.countDragonsByType(type)));
 
     }
 
-    @GetMapping(value = "/filter-by-color")
+    @GetMapping(value = "/filter-by-color/")
     public ResponseEntity<?> countByType(
             @RequestParam("color") Color color,
             @RequestParam(value = "limit", required = false) Integer limit,
@@ -129,7 +130,7 @@ public class DragonView {
 
     }
 
-    @GetMapping(value = "/sum-age")
+    @GetMapping(value = "/sum-age/")
     public ResponseEntity<?> sumAge() throws ServiceError {
 
         return ResponseEntity.ok().body(new SumResponse(dragonUtils.sumAge()));
@@ -137,7 +138,7 @@ public class DragonView {
     }
 
 
-    @GetMapping(value = "/{dragonId}")
+    @GetMapping(value = "/{dragonId}/")
     public ResponseEntity<?> getById(@PathVariable("dragonId") Long dragonId) throws ServiceError {
 
         Optional<Dragon> mbDragon = dragonGetter.getById(dragonId);
@@ -146,7 +147,7 @@ public class DragonView {
 
     }
 
-    @PutMapping(value = "/{dragonId}")
+    @PutMapping(value = "/{dragonId}/")
     public ResponseEntity<?> update(
             @RequestParam("dragon")  final String updateDragonRequestString,
             @PathVariable("dragonId") Long dragonId
@@ -168,12 +169,12 @@ public class DragonView {
         } catch (JsonProcessingException ex) {
             return ResponseEntity.badRequest().build();
         } catch (ValidationError error) {
-            return ResponseEntity.badRequest().body(error.getErrors());
+            return ResponseEntity.badRequest().body(new ErrorResponse(error.getErrors()));
         }
 
     }
 
-    @DeleteMapping("/{dragonId}")
+    @DeleteMapping("/{dragonId}/")
     public ResponseEntity<?> delete(
             @RequestParam("dragonId") Long dragonId
     ) throws ServiceError {

@@ -26,6 +26,9 @@ public class DragonCreator {
                 .name(data.getName())
                 .character(data.getCharacter())
                 .type(data.getType())
+                .coordinates(data.getCoordinates())
+                .color(data.getColor())
+                .character(data.getCharacter())
                 .age(data.getAge())
                 .build();
 
