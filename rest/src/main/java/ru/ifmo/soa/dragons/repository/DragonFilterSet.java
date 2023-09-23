@@ -2,6 +2,7 @@ package ru.ifmo.soa.dragons.repository;
 
 import ru.ifmo.soa.app.sql.filter.FilterSet;
 
+import java.util.List;
 import java.util.Set;
 
 public class DragonFilterSet extends FilterSet {
@@ -20,4 +21,5 @@ public class DragonFilterSet extends FilterSet {
                 "killer_id"
         );
     }
+
 }

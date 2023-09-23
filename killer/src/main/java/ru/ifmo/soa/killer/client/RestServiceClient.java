@@ -16,7 +16,9 @@ import ru.ifmo.soa.killer.model.Person;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 import java.util.Properties;
+import java.util.Spliterator;
 
 @ApplicationScoped
 public class RestServiceClient {
@@ -57,6 +59,17 @@ public class RestServiceClient {
         } catch (Exception e) {
             throw new ClientError();
         }
+    }
+
+    private Optional<Object> getEntity(CloseableHttpResponse response, Class<?> target) throws IOException {
+
+        Object object = null;
+        int status = response.getStatusLine().getStatusCode();
+        if (status >= 200 && status < 300) {
+            Object e = mapEntity(response.getEntity(), target);
+        }
+        else if
+
     }
 
 

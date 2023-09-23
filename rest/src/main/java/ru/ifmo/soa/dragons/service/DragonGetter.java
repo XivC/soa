@@ -10,6 +10,7 @@ import ru.ifmo.soa.app.sql.order.InvalidOrder;
 import ru.ifmo.soa.app.sql.order.Order;
 import ru.ifmo.soa.dragons.model.Dragon;
 import ru.ifmo.soa.dragons.repository.DragonFilterSet;
+import ru.ifmo.soa.dragons.repository.DragonFilterSetValidator;
 import ru.ifmo.soa.dragons.repository.DragonOrderSet;
 import ru.ifmo.soa.dragons.repository.DragonRepository;
 
@@ -23,6 +24,9 @@ public class DragonGetter {
 
     @Autowired
     DragonRepository dragonRepository;
+
+    @Autowired
+    DragonFilterSetValidator dragonFilterSetValidator;
 
     public List<Dragon> getDragons(List<Filter<String>> filters, List<Order> orders, Integer limit, Integer offset) throws ServiceError, ValidationError {
 
@@ -59,6 +63,9 @@ public class DragonGetter {
                 errors.add(String.format("Filter %s is not allowed", f.getKey()));
             }
         }
+
+        errors.addAll(dragonFilterSetValidator.validate(filterSet));
+
 
         if (!errors.isEmpty()) throw new ValidationError(errors);
         return filterSet;
