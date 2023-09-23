@@ -22,6 +22,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.index_view, name='index'),
+    path('api/dragons/', views.forward_request, name='forward_request')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 

@@ -77,5 +77,5 @@ function request(host, path, params, method, callback) {
 }
 
 export function request_crud(path, params, method, callback) {
-    return request('http://localhost:8080/api/', path, params, method, callback)
+    return request('http://127.0.0.1:8000/api/', path, params, method, callback)
 }
