@@ -2,7 +2,7 @@ import {DragonRepository} from "../../data/repository/dragon_repository.js";
 import {PageCollection} from "./page_collection.js";
 import {FiltersComponent} from "../components/filters.js";
 import {SortsComponent} from "../components/sorts.js";
-import {PageObjectDragon} from "./page_object.js";
+import {PageObjectDragon} from "./page_object_dragon.js";
 
 export class PageCollectionDragons extends PageCollection {
 

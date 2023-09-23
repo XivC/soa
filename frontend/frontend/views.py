@@ -1,41 +1,27 @@
 from django.shortcuts import render
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+import requests
+import xmltodict
+import json
+import requests
 
 
 def index_view(request):
     return render(request, 'index.html')
 
 
-def redirect_to_crud(request):
-    target_url = 'http://example.com'
+def forward_request(request):
+    # Extract request data
+    url = "http://188.242.74.186:8080" + request.path  # Replace with the URL of the other server
 
-    # Redirect all incoming requests to the target server
-    return HttpResponseRedirect(target_url)
-    target_url = 'http://example.com'
+    headers = {k: str(v) for k, v in request.META.items() if k != 'HTTP_HOST'}
+    params = request.GET
 
-    # Redirect all incoming requests to the target server
-    return HttpResponseRedirect(target_url)
+    response = requests.request(request.method, url, headers=headers, params=params, data=request.body)
 
-
-def proxy_api_request(request, *args, **kwargs):
-    # Define the URL of the target server
-    target_server_url = "http://api.example.com/api-endpoint"  # Replace with your API endpoint
-
-    try:
-        # Forward the client's request to the target server
-        target_url = f"{target_server_url}{request.get_full_path()}"
-        headers = dict(request.headers)
-        response = requests.request(request.method, target_url, params=request.GET, data=request.body, headers=headers)
-
-        # Return the target server's response to the client, including headers
-        django_response = HttpResponse(response.content, status=response.status_code,
-                                       content_type=response.headers['Content-Type'])
-
-        # Copy headers from the target server's response to the Django response
-        for key, value in response.headers.items():
-            django_response[key] = value
-
-        return django_response
-
-    except Exception as e:
-        # Handle any errors that occur during the request
-        return JsonResponse({'error': str(e)}, status=500)
+    forwarded_response = HttpResponse(response.content, status=response.status_code)
+    forwarded_response['Content-Type'] = 'application/json'
+    xml_dict = xmltodict.parse(forwarded_response.content)
+    forwarded_response.content = json.dumps(xml_dict, indent=4)
+    return forwarded_response

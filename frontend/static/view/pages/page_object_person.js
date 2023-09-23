@@ -1,5 +1,5 @@
 import {PageObject} from './page_object.js'
-import {PersonRepository} from "../../data/repository/preson_repository.js";
+import {PersonRepository} from "../../data/repository/person_repository.js";
 
 export class PageObjectPerson extends PageObject {
 
