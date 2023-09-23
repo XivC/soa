@@ -5,12 +5,14 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.http.HttpEntity;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import ru.ifmo.soa.killer.model.Dragon;
+import ru.ifmo.soa.killer.model.Person;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,25 +29,43 @@ public class RestServiceClient {
         baseUrl = properties.getProperty("rest-service.base-url");
     }
 
-    public Dragon getById(Long dragonId) throws ClientError{
-        String url = baseUrl + String.format("/api/dragons/%s/", dragonId);
+    public Dragon getDragonById(Long dragonId) throws ClientError{
+        String url = baseUrl + String.format("api/dragons/%s/", dragonId);
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
 
             HttpGet httpGet = new HttpGet(url);
 
             try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-                HttpEntity entity = response.getEntity();
+                return  (Dragon) mapEntity(response.getEntity(), Dragon.class);
+            }
+        } catch (Exception e) {
+            throw new ClientError();
+        }
+    }
 
-                String responseBody = EntityUtils.toString(entity);
-                XmlMapper mapper = new XmlMapper();
-                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                return mapper.readValue(responseBody, Dragon.class);
+    public Person getPersonById(String passportId) throws ClientError{
+        String url = baseUrl + String.format("api/persons/%s/", passportId);
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+
+            HttpGet httpGet = new HttpGet(url);
+
+            try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
+                return (Person) mapEntity(response.getEntity(), Person.class);
 
 
             }
         } catch (Exception e) {
             throw new ClientError();
         }
+    }
+
+
+    private Object mapEntity(HttpEntity entity, Class<?> target) throws IOException {
+
+        String responseBody = EntityUtils.toString(entity);
+        XmlMapper mapper = new XmlMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return mapper.readValue(responseBody, target);
     }
 
     private Properties readProperties(){

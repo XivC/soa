@@ -24,7 +24,7 @@ public class DragonRepository {
     @Autowired
     DBConnectionManager dbConnectionManager;
 
-    final String BASE_GET_SQL = "SELECT\n" +
+    final String BASE_GET_SQL = "SELECT * FROM ( SELECT\n" +
             "    dragons.id as id,\n" +
             "    dragons.name as name,\n" +
             "    dragons.coordinate_x as coordinate_x,\n" +
@@ -40,7 +40,7 @@ public class DragonRepository {
             "    persons.height,\n" +
             "    persons.weight,\n" +
             "    persons.nationality " +
-            "FROM dragons LEFT JOIN persons  ON dragons.killer_id = persons.passport_id ";
+            "FROM dragons LEFT JOIN persons  ON dragons.killer_id = persons.passport_id) as dt ";
 
     public void save(Dragon dragon) throws SQLException {
         if (dragon.getId() == null) create(dragon);
@@ -72,9 +72,9 @@ public class DragonRepository {
         statement.setLong(3, dragon.getCoordinates().getY());
         statement.setDate(4, Date.valueOf(LocalDate.now()));
         statement.setInt(5, dragon.getAge());
-        statement.setString(6, dragon.getColor().toString());
+        statement.setString(6, dragon.getColor() == null ? null : dragon.getColor().toString());
         statement.setString(7, dragon.getType().toString());
-        statement.setString(8, dragon.getCharacter().toString());
+        statement.setString(8, dragon.getCharacter() == null ? null : dragon.getCharacter().toString());
         statement.setString(9, dragon.getKillerId());
         statement.execute();
         ResultSet keys = statement.getGeneratedKeys();
@@ -139,9 +139,9 @@ public class DragonRepository {
         statement.setInt(2, dragon.getCoordinates().getX());
         statement.setLong(3, dragon.getCoordinates().getY());
         statement.setInt(4, dragon.getAge());
-        statement.setString(5, dragon.getColor().toString());
+        statement.setString(5, dragon.getColor() == null ? null : dragon.getColor().toString());
         statement.setString(6, dragon.getType().toString());
-        statement.setString(7, dragon.getCharacter().toString());
+        statement.setString(7, dragon.getCharacter()  == null ? null : dragon.getCharacter().toString());
         statement.setString(8, dragon.getKillerId());
         statement.setLong(9, dragon.getId());
         statement.execute();
@@ -176,9 +176,12 @@ public class DragonRepository {
                 )
                 .creationDate(resultSet.getDate("creation_date").toLocalDate())
                 .age(resultSet.getInt("age"))
-                .color(Color.valueOf(resultSet.getString("color")))
-                .type(DragonType.valueOf(resultSet.getString("type")))
-                .character(DragonCharacter.valueOf(resultSet.getString("character")));
+                .type(DragonType.valueOf(resultSet.getString("type")));
+
+        String colorString = resultSet.getString("color");
+        String characterString = resultSet.getString("character");
+        if (colorString != null) dragonBuilder.color(Color.valueOf(colorString));
+        if (characterString != null) dragonBuilder.character(DragonCharacter.valueOf(characterString));
 
         String killerId = resultSet.getString("killer_id");
         if (killerId != null) {

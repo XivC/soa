@@ -21,7 +21,7 @@ public class KillerResource {
     @Path("/{dragonId}/kill")
     public Dragon killDragon(@PathParam("dragonId") @NotNull Long dragonId) throws ClientError {
 
-        Dragon dragon = restServiceClient.getById(dragonId);
+        Dragon dragon = restServiceClient.getDragonById(dragonId);
         return dragon;
 
 

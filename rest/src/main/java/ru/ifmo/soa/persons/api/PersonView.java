@@ -4,6 +4,7 @@ package ru.ifmo.soa.persons.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ifmo.soa.app.service.ServiceError;
@@ -21,7 +22,8 @@ import ru.ifmo.soa.persons.service.PersonGetter;
 
 import java.util.Optional;
 
-@RestController("/api/persons")
+@RestController
+@RequestMapping(value = "/api/persons", produces = MediaType.APPLICATION_XML_VALUE )
 public class PersonView {
 
     @Autowired
@@ -42,8 +44,8 @@ public class PersonView {
     @Autowired
     PersonDeleter personDeleter;
 
-    @PostMapping(produces = "application/xml")
-    public ResponseEntity<?> create(@RequestParam("person") final String createPersonRequestString) throws ServiceError {
+    @PostMapping(value = "/", produces = "application/xml")
+    public ResponseEntity<?> create(@RequestParam("person") String createPersonRequestString) throws ServiceError {
 
         ObjectMapper mapper = new ObjectMapper();
         try {
