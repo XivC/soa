@@ -1,32 +1,6 @@
 // Create a new XMLHttpRequest object
 
 
-function xmlToJson(xml) {
-    // Process child nodes
-    if (xml.hasChildNodes()) {
-        const obj = {};
-        for (let i = 0; i < xml.childNodes.length; i++) {
-            const item = xml.childNodes.item(i);
-            const nodeName = item.nodeName;
-            if (typeof obj[nodeName] === "undefined") {
-                obj[nodeName] = xmlToJson(item);
-            } else {
-                if (typeof obj[nodeName].push === "undefined") {
-                    const oldObj = obj[nodeName];
-                    obj[nodeName] = [];
-                    obj[nodeName].push(oldObj);
-                }
-                obj[nodeName].push(xmlToJson(item));
-            }
-        }
-        return obj;
-    } else {
-        if (xml.nodeValue == null) return "";
-        return xml.nodeValue.trim();
-    }
-}
-
-
 function request(host, path, params, method, callback) {
     const xhr = new XMLHttpRequest();
 
@@ -46,13 +20,7 @@ function request(host, path, params, method, callback) {
 // Set up a callback function to handle the response
     xhr.onload = function () {
         if (xhr.status >= 200 && xhr.status < 300) {
-            // The request was successful; parse the XML response
-            const xmlText = xhr.responseText.replace(/^\s+/gm, '');
-            // Use DOMParser to parse the XML into a Document object
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(xmlText, 'application/xml');
-            const data = xmlToJson(xmlDoc)
-            console.log(xmlDoc.childNodes.item(0).childNodes)
+            const data = JSON.parse(xhr.responseText)
             console.log(data)
             callback(data)
         } else {

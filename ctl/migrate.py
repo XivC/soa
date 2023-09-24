@@ -19,7 +19,7 @@ def exec_migration(cursor, file):
 def migrate():
     connection = psycopg2.connect(db_props.get('db.url').data)
     try:
-        migrations_files = glob.glob('migrations/*.sql')
+        migrations_files = sorted(glob.glob('migrations/*.sql'))
         cursor = connection.cursor()
         for file_name in migrations_files:
             with open(file_name) as file:

@@ -1,4 +1,4 @@
-import {Dragon} from "../model/dragon.js";
+import {Person} from "../model/person.js";
 import {request_crud} from "../../api/api.js";
 
 export class PersonRepository {
@@ -8,13 +8,13 @@ export class PersonRepository {
         request_crud(
             'persons/',
             {
-                'page': page * limit,
+                'offset': page * limit,
                 'limit': limit,
                 'filter': JSON.stringify(filters),
-                'sort': JSON.stringify(sorts)
+                'order': JSON.stringify(sorts)
             },
             'GET',
-            (data) => callback(data['Dragons']['Dragon'].map((item) => new Dragon(
+            (data) => callback(data['persons'].map((item) => new Person(
                 item['id'],
                 item['name'],
                 item['coordinates']['x'],
@@ -29,11 +29,11 @@ export class PersonRepository {
         )
     }
 
-    createDragon(fields, callback) {
+    createPerson(fields, callback) {
         request_crud(
-            'dragons/',
+            'persons/',
             {
-                'dragon': JSON.stringify({
+                'person': JSON.stringify({
                     'name': fields['name'],
                     'coordinates': {
                         'x': fields['x'],
@@ -50,11 +50,11 @@ export class PersonRepository {
         )
     }
 
-    updateDragon(id, fields, callback) {
+    updatePerson(id, fields, callback) {
         request_crud(
-            'dragons/' + id,
+            'persons/' + id,
             {
-                'dragon': JSON.stringify({
+                'person': JSON.stringify({
                     'name': fields['name'],
                     'coordinates': {
                         'x': fields['x'],

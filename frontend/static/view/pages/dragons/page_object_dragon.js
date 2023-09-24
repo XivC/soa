@@ -1,5 +1,5 @@
-import {PageObject} from './page_object.js'
-import {DragonRepository} from "../../data/repository/dragon_repository.js";
+import {PageObject} from '../common/page_object.js'
+import {DragonRepository} from "../../../data/repository/dragon_repository.js";
 
 export class PageObjectDragon extends PageObject {
 
