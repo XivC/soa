@@ -1,4 +1,4 @@
-import {PageCollectionDragons} from "./view/pages/page_collection_dragons.js";
+import {PageCollectionDragons} from "./view/pages/dragons/page_collection_dragons.js";
 import {App} from './view/app.js'
 
 

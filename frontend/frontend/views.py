@@ -1,27 +1,47 @@
+import xmltodict
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-import requests
-import xmltodict
 import json
 import requests
+import xml.etree.ElementTree as ET
 
 
 def index_view(request):
     return render(request, 'index.html')
 
 
-def forward_request(request):
+def forward_request(request, response_processor=lambda root: {}):
     # Extract request data
-    url = "http://188.242.74.186:8080" + request.path  # Replace with the URL of the other server
+    DYBOV = "http://188.242.74.186:8080"
+    ME = "http://localhost:8080"
+    url = ME + request.path  # Replace with the URL of the other server
 
     headers = {k: str(v) for k, v in request.META.items() if k != 'HTTP_HOST'}
     params = request.GET
 
     response = requests.request(request.method, url, headers=headers, params=params, data=request.body)
 
-    forwarded_response = HttpResponse(response.content, status=response.status_code)
+    root = ET.fromstring(response.content)
+    json_resp = json.dumps(response_processor(root), indent=4)
+    forwarded_response = HttpResponse(json_resp, status=response.status_code)
     forwarded_response['Content-Type'] = 'application/json'
-    xml_dict = xmltodict.parse(forwarded_response.content)
-    forwarded_response.content = json.dumps(xml_dict, indent=4)
     return forwarded_response
+
+
+def make_array_processor(array_name, element_name):
+    def processor(root):
+        items = []
+        for item in root.findall(element_name):
+            xml_string = ET.tostring(item, encoding='unicode')
+            json_item = xmltodict.parse(xml_string)
+            items.append(list(json_item.values())[0])
+        return {array_name: items}
+    return processor
+
+
+def dragons(request):
+    return forward_request(request, response_processor=make_array_processor('dragons', 'Dragon'))
+
+
+def persons(request):
+    return forward_request(request, response_processor=make_array_processor('persons', 'Person'))

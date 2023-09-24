@@ -8,13 +8,13 @@ export class DragonRepository {
         request_crud(
             'dragons/',
             {
-                'page': page * limit,
+                'offset': page * limit,
                 'limit': limit,
                 'filter': JSON.stringify(filters),
-                'sort': JSON.stringify(sorts)
+                'order': JSON.stringify(sorts)
             },
             'GET',
-            (data) => callback(data['Dragons']['Dragon'].map((item) => new Dragon(
+            (data) => callback(data['dragons'].map((item) => new Dragon(
                 item['id'],
                 item['name'],
                 item['coordinates']['x'],

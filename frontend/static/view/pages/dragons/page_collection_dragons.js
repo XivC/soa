@@ -1,8 +1,9 @@
-import {DragonRepository} from "../../data/repository/dragon_repository.js";
-import {PageCollection} from "./page_collection.js";
-import {FiltersComponent} from "../components/filters.js";
-import {SortsComponent} from "../components/sorts.js";
+import {DragonRepository} from "../../../data/repository/dragon_repository.js";
+import {PageCollection} from "../common/page_collection.js";
+import {FiltersComponent} from "../../components/filters.js";
+import {SortsComponent} from "../../components/sorts.js";
 import {PageObjectDragon} from "./page_object_dragon.js";
+import {Dragon} from "../../../data/model/dragon.js";
 
 export class PageCollectionDragons extends PageCollection {
 
@@ -14,13 +15,25 @@ export class PageCollectionDragons extends PageCollection {
 
     onCreate() {
         super.onCreate()
+        let fields = [
+            "id",
+            "name",
+            "coordinate_x",
+            "coordinate_y",
+            "creation_date",
+            "age",
+            "color",
+            "type",
+            "character",
+            "killer_id"
+        ]
         this.filtersComponent = new FiltersComponent(
-            ['id', 'name', 'character'],
+            fields,
             () => this.reload()
         )
 
         this.sortsComponent = new SortsComponent(
-            ['id', 'name', 'character'],
+            fields,
             () => this.reload()
         )
     }
@@ -36,7 +49,7 @@ export class PageCollectionDragons extends PageCollection {
 
     cardInnerHtml(item) {
         return `
-        <h2>${item.name}</h2>
+        <p>Name: ${item.name}</p>
         <p>ID: ${item.id}</p>
         <p>Type: ${item.type}</p>
         <p>Age: ${item.age}</p>
