@@ -64,7 +64,7 @@ public class DragonView {
             CreateDragonRequest request = mapper.readValue(createDragonRequestString, CreateDragonRequest.class);
             ValidatedData<CreateDragonRequest, CreateDragonRequestValidator> validatedData = new ValidatedData<>(request, createDragonRequestValidator);
             Dragon dragon = dragonCreator.create(validatedData);
-            return ResponseEntity.status(200).body(dragon);
+            return ResponseEntity.status(201).body(dragon);
 
         } catch (JsonProcessingException ex) {
             return ResponseEntity.status(400).build();
