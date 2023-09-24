@@ -12,7 +12,9 @@ export class SortsComponent {
     }
 
     getSorts() {
-        return Object.entries(this.sorts).map(([key, order]) => new Sort(key, order));
+        return Object.entries(this.sorts)
+            .map(([key, order]) => new Sort(key, order))
+            .filter((s) => s.orderType !== 'NOT-SET');
     }
 
     createSortsContainer() {
@@ -28,6 +30,7 @@ export class SortsComponent {
         filterElement.innerHTML = `
             <label htmlFor="${elementId}">${name}</label>
             <select id="${elementId}">
+                <option value="NOT-SET">-</option>
                 <option value="ASC">Ascending</option>
                 <option value="DESC">Descending</option>
             </select>`;

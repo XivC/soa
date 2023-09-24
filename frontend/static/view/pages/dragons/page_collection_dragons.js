@@ -3,7 +3,8 @@ import {PageCollection} from "../common/page_collection.js";
 import {FiltersComponent} from "../../components/filters.js";
 import {SortsComponent} from "../../components/sorts.js";
 import {PageObjectDragon} from "./page_object_dragon.js";
-import {Dragon} from "../../../data/model/dragon.js";
+import {PageCollectionPersons} from '../persons/page_collection_persons.js';
+
 
 export class PageCollectionDragons extends PageCollection {
 
@@ -36,6 +37,14 @@ export class PageCollectionDragons extends PageCollection {
             fields,
             () => this.reload()
         )
+
+        document.body.insertAdjacentHTML(
+            'afterbegin',
+            `<button id="to-persons-button">To persons</button>`
+        )
+        document.getElementById("to-persons-button").onclick = () => {
+            this.app.pushPage(new PageCollectionPersons(this.app))
+        }
     }
 
     fetchElements(page, callback) {
@@ -54,7 +63,7 @@ export class PageCollectionDragons extends PageCollection {
         <p>Type: ${item.type}</p>
         <p>Age: ${item.age}</p>
         <p>Color: ${item.color}</p>
-        <p>Coordinates: ${item.y}:${item.y}</p>
+        <p>Coordinates: ${item.x}:${item.y}</p>
         <p>Character: ${item.character}</p>
         <p>Killer ID: ${item.killerId}</p>
         `;

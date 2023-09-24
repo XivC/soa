@@ -21,8 +21,11 @@ def forward_request(request, response_processor=lambda root: {}):
 
     response = requests.request(request.method, url, headers=headers, params=params, data=request.body)
 
-    root = ET.fromstring(response.content)
-    json_resp = json.dumps(response_processor(root), indent=4)
+    try:
+        root = ET.fromstring(response.content)
+        json_resp = json.dumps(response_processor(root), indent=4)
+    except:
+        json_resp = response.content
     forwarded_response = HttpResponse(json_resp, status=response.status_code)
     forwarded_response['Content-Type'] = 'application/json'
     return forwarded_response
@@ -40,8 +43,14 @@ def make_array_processor(array_name, element_name):
 
 
 def dragons(request):
-    return forward_request(request, response_processor=make_array_processor('dragons', 'Dragon'))
+    if request.method == 'GET':
+        return forward_request(request, response_processor=make_array_processor('dragons', 'Dragon'))
+    else:
+        return forward_request(request)
 
 
 def persons(request):
-    return forward_request(request, response_processor=make_array_processor('persons', 'Person'))
+    if request.method == 'GET':
+        return forward_request(request, response_processor=make_array_processor('persons', 'Person'))
+    else:
+        return forward_request(request)

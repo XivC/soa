@@ -52,7 +52,7 @@ export class DragonRepository {
 
     updateDragon(id, fields, callback) {
         request_crud(
-            'dragons/' + id,
+            `dragons/${id}/`,
             {
                 'dragon': JSON.stringify({
                     'name': fields['name'],
