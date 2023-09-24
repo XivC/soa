@@ -4,14 +4,18 @@ import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.PreMatching;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.Provider;
 import ru.ifmo.soa.killer.client.ClientError;
 import ru.ifmo.soa.killer.client.RestServiceClient;
 import ru.ifmo.soa.killer.model.Person;
 
 import java.io.IOException;
+import java.util.Optional;
 
-@WebFilter
+@Provider
+@PreMatching
 public class DummyAuthorization implements ContainerRequestFilter {
 
     @Inject
@@ -20,8 +24,15 @@ public class DummyAuthorization implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext containerRequestContext) throws IOException{
         String passportId = (String) containerRequestContext.getProperty("Authorization");
+        if (passportId == null) containerRequestContext.abortWith(Response.status(401).build());
         try {
-            Person person = restServiceClient.getPersonById(passportId);
+            Optional<Person> mbPerson = restServiceClient.getPersonById(passportId);
+
+            if (mbPerson.isEmpty()) {
+                containerRequestContext.abortWith(Response.status(401).build());
+                return;
+            }
+            containerRequestContext.setProperty("person", mbPerson.get());
 
         }
         catch (ClientError ex){

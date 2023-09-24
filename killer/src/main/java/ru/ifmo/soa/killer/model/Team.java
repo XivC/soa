@@ -12,6 +12,8 @@ import lombok.*;
 public class Team {
     private Long id;
     private Cave startCave;
+    private Integer size;
+    private String name;
 
     public Long getStartCaveId(){
         if (this.startCave != null) return this.startCave.getId();

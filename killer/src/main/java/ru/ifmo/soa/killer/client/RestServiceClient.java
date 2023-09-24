@@ -2,23 +2,26 @@ package ru.ifmo.soa.killer.client;
 
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.http.HttpEntity;
-import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import ru.ifmo.soa.killer.model.Dragon;
 import ru.ifmo.soa.killer.model.Person;
+import ru.ifmo.soa.killer.schema.UpdateDragonRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.Spliterator;
 
 @ApplicationScoped
 public class RestServiceClient {
@@ -31,28 +34,55 @@ public class RestServiceClient {
         baseUrl = properties.getProperty("rest-service.base-url");
     }
 
-    public Dragon getDragonById(Long dragonId) throws ClientError{
+    public Optional<Dragon> getDragonById(Long dragonId) throws ClientError{
         String url = baseUrl + String.format("api/dragons/%s/", dragonId);
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
 
             HttpGet httpGet = new HttpGet(url);
 
             try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-                return  (Dragon) mapEntity(response.getEntity(), Dragon.class);
+                return  getEntity(response, Dragon.class);
             }
         } catch (Exception e) {
             throw new ClientError();
         }
     }
 
-    public Person getPersonById(String passportId) throws ClientError{
+    public Optional<Dragon> update(Dragon dragon) throws ClientError {
+
+
+        UpdateDragonRequest request = UpdateDragonRequest.fromDragon(dragon);
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+
+
+            try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+                String dragonString = mapper.writeValueAsString(request);
+                String url = baseUrl + String.format("api/dragons/%s/?dragon=%s", dragon.getId(), URLEncoder.encode(dragonString, StandardCharsets.UTF_8));
+                HttpPut httpPut = new HttpPut(url);
+                try (CloseableHttpResponse response = httpClient.execute(httpPut)) {
+                    return  getEntity(response, Dragon.class);
+                }
+
+            }
+
+
+        } catch (IOException ex){
+            throw new ClientError();
+        }
+
+
+    }
+
+    public Optional<Person> getPersonById(String passportId) throws ClientError{
         String url = baseUrl + String.format("api/persons/%s/", passportId);
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
 
             HttpGet httpGet = new HttpGet(url);
 
             try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-                return (Person) mapEntity(response.getEntity(), Person.class);
+                return  getEntity(response, Person.class);
 
 
             }
@@ -61,14 +91,16 @@ public class RestServiceClient {
         }
     }
 
-    private Optional<Object> getEntity(CloseableHttpResponse response, Class<?> target) throws IOException {
+    private <T> Optional<T> getEntity(CloseableHttpResponse response, Class<T> target) throws IOException, ClientError {
 
-        Object object = null;
+        T object = null;
         int status = response.getStatusLine().getStatusCode();
         if (status >= 200 && status < 300) {
-            Object e = mapEntity(response.getEntity(), target);
+            object = (T) mapEntity(response.getEntity(), target);
         }
-        else if
+        else if (status != 404) throw new ClientError();
+
+        return Optional.ofNullable(object);
 
     }
 

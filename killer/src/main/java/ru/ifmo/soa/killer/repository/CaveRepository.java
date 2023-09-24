@@ -30,15 +30,13 @@ public class CaveRepository {
 
     }
 
-    public Cave create() throws SQLException {
+    public void create(Cave cave) throws SQLException {
 
-        String sql = "INSERT  INTO Caves DEFAULT VALUES";
+        String sql = "INSERT INTO Caves (id) VALUES (?)";
         Connection connection = dbConnectionManager.getConnection();
-        PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setLong(1, cave.getId());
         statement.execute();
-        ResultSet keys = statement.getGeneratedKeys();
-        keys.next();
-        return new Cave(keys.getLong(1));
 
 
     }

@@ -2,8 +2,13 @@ package ru.ifmo.soa.killer;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
+import ru.ifmo.soa.killer.auth.DummyAuthorization;
+
+import java.util.Set;
 
 @ApplicationPath("/killer")
-public class HelloApplication extends Application {
+public class KillerApplication extends Application {
+
+
 
 }
