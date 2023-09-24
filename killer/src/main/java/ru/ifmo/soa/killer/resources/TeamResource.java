@@ -53,9 +53,9 @@ public class TeamResource {
 
         try {
 
-            Team team = teamCreator.create(teamId, teamName, teamSize, cave);
+            teamCreator.create(teamId, teamName, teamSize, cave);
 
-            return Response.status(201).entity(team).build();
+            return Response.status(204).build();
 
 
         } catch (ValidationError error) {
