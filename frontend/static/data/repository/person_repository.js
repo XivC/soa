@@ -1,31 +1,24 @@
 import {Person} from "../model/person.js";
 import {request_crud} from "../../api/api.js";
 
-export class PersonRepository {
+class PersonRepository {
 
-    listPersons(page, filters, sorts, callback) {
-        const limit = 5
+    getPerson(passportId, callback) {
         request_crud(
-            'persons/',
-            {
-                'offset': page * limit,
-                'limit': limit,
-                'filter': JSON.stringify(filters),
-                'order': JSON.stringify(sorts)
-            },
+            'persons/' + passportId,
+            {},
             'GET',
-            (data) => callback(data['persons'].map((item) => new Person(
-                item['id'],
-                item['name'],
-                item['coordinates']['x'],
-                item['coordinates']['y'],
-                `${item['creationDate'][0]}:${item['creationDate'][1]}:${item['creationDate'][2]}`,
-                item['age'],
-                item['color'],
-                item['character'],
-                item['type'],
-                null
-            )))
+            (data) => {
+                let item = data['person']
+                let person = new Person(
+                    item['name'],
+                    item['height'],
+                    item['weight'],
+                    item['passport-id'],
+                    item['nationality']
+                )
+                callback(person)
+            }
         )
     }
 
@@ -35,14 +28,10 @@ export class PersonRepository {
             {
                 'person': JSON.stringify({
                     'name': fields['name'],
-                    'coordinates': {
-                        'x': fields['x'],
-                        'y': fields['y']
-                    },
-                    'age': fields['age'],
-                    'color': fields['color'],
-                    'character': fields['character'],
-                    'type': fields['type']
+                    'height': fields['height'],
+                    'weight': fields['weight'],
+                    'passportId': fields['passportId'],
+                    'nationality': fields['nationality']
                 })
             },
             'POST',
@@ -56,14 +45,9 @@ export class PersonRepository {
             {
                 'person': JSON.stringify({
                     'name': fields['name'],
-                    'coordinates': {
-                        'x': fields['x'],
-                        'y': fields['y']
-                    },
-                    'age': fields['age'],
-                    'color': fields['color'],
-                    'character': fields['character'],
-                    'type': fields['type']
+                    'height': fields['height'],
+                    'weight': fields['weight'],
+                    'nationality': fields['nationality']
                 })
             },
             'PUT',
@@ -71,3 +55,5 @@ export class PersonRepository {
         )
     }
 }
+
+export let personRepository = new PersonRepository()

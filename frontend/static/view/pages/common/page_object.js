@@ -26,9 +26,9 @@ export class PageObject extends Page {
             })
             document.getElementById("loadingIndicator").style.display = 'block';
             if (this.entity == null) {
-                this.onCreateEntity(fields, () => this.app.popPage())
+                this.onCreateEntity(fields)
             } else {
-                this.onUpdateEntity(fields, () => this.app.popPage())
+                this.onUpdateEntity(fields)
             }
         }
         this.fieldNames.forEach((name) => this.addField(name))
@@ -45,7 +45,7 @@ export class PageObject extends Page {
         container.appendChild(field)
     }
 
-    onCreateEntity(fields, callback) {}
+    onCreateEntity(fields) {}
 
-    onUpdateEntity(fields, callback) {}
+    onUpdateEntity(fields) {}
 }

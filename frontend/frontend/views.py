@@ -23,7 +23,13 @@ def forward_request(request, response_processor=lambda root: {}):
 
     try:
         root = ET.fromstring(response.content)
-        json_resp = json.dumps(response_processor(root), indent=4)
+        if 200 <= response.status_code < 300:
+            body = response_processor(root)
+        else:
+            body = {
+                'errors:': [i.text for i in root.findall('item')]
+            }
+        json_resp = json.dumps(body, indent=4)
     except:
         json_resp = response.content
     forwarded_response = HttpResponse(json_resp, status=response.status_code)

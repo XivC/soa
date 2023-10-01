@@ -1,14 +1,11 @@
-import {DragonRepository} from "../../../data/repository/dragon_repository.js";
+import {dragonRepository} from "../../../data/repository/dragon_repository.js";
 import {PageCollection} from "../common/page_collection.js";
 import {FiltersComponent} from "../../components/filters.js";
 import {SortsComponent} from "../../components/sorts.js";
 import {PageObjectDragon} from "./page_object_dragon.js";
-import {PageCollectionPersons} from '../persons/page_collection_persons.js';
 
 
 export class PageCollectionDragons extends PageCollection {
-
-    dragonRepository = new DragonRepository()
 
     constructor(app) {
         super(app);
@@ -37,18 +34,10 @@ export class PageCollectionDragons extends PageCollection {
             fields,
             () => this.reload()
         )
-
-        document.body.insertAdjacentHTML(
-            'afterbegin',
-            `<button id="to-persons-button">To persons</button>`
-        )
-        document.getElementById("to-persons-button").onclick = () => {
-            this.app.pushPage(new PageCollectionPersons(this.app))
-        }
     }
 
     fetchElements(page, callback) {
-        this.dragonRepository.listDragons(
+        dragonRepository.listDragons(
             page,
             this.filtersComponent.getFilters(),
             this.sortsComponent.getSorts(),

@@ -1,22 +1,22 @@
 import {PageObject} from '../common/page_object.js'
-import {DragonRepository} from "../../../data/repository/dragon_repository.js";
+import {dragonRepository} from "../../../data/repository/dragon_repository.js";
+import {personRepository} from "../../../data/repository/person_repository.js";
 
 export class PageObjectDragon extends PageObject {
 
     constructor(props, entity) {
-        super(props, ['name', 'x', 'y', 'age', 'color', 'character', 'type'], entity);
-        this.dragonRepository = new DragonRepository()
+        super(props, ['name', 'x', 'y', 'age', 'color', 'character', 'type'], entity)
     }
 
     onCreate() {
         super.onCreate();
     }
 
-    onUpdateEntity(fields, callback) {
-        this.dragonRepository.updateDragon(this.entity.id, fields, callback)
+    onUpdateEntity(fields) {
+        dragonRepository.updateDragon(this.entity.id, fields, () => this.app.popPage())
     }
 
-    onCreateEntity(fields, callback) {
-        this.dragonRepository.createDragon(fields, callback)
+    onCreateEntity(fields) {
+        dragonRepository.createDragon(fields, () => this.app.popPage())
     }
 }

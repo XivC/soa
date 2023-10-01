@@ -1,7 +1,7 @@
 import {Dragon} from "../model/dragon.js";
 import {request_crud} from "../../api/api.js";
 
-export class DragonRepository {
+class DragonRepository {
 
     listDragons(page, filters, sorts, callback) {
         const limit = 5
@@ -71,3 +71,5 @@ export class DragonRepository {
         )
     }
 }
+
+export let dragonRepository = new DragonRepository()

@@ -1,26 +1,16 @@
 export class Person {
 
     constructor(
-        id,
         name,
-        x,
-        y,
-        creationDate,
-        age,
-        color,
-        character,
-        type,
-        killerId
+        height,
+        weight,
+        passportID,
+        nationality
     ) {
-        this.id = id;
         this.name = name;
-        this.x = x;
-        this.y = y;
-        this.creationDate = creationDate;
-        this.age = age;
-        this.color = color;
-        this.character = character;
-        this.type = type;
-        this.killerId = killerId;
+        this.height = height;
+        this.weight = weight;
+        this.passportID = passportID;
+        this.nationality = nationality;
     }
 }
