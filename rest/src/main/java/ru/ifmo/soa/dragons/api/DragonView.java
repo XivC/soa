@@ -4,6 +4,7 @@ package ru.ifmo.soa.dragons.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -142,7 +143,7 @@ public class DragonView {
     public ResponseEntity<?> getById(@PathVariable("dragonId") Long dragonId) throws ServiceError {
 
         Optional<Dragon> mbDragon = dragonGetter.getById(dragonId);
-        if (mbDragon.isEmpty()) return ResponseEntity.notFound().build();
+        if (!mbDragon.isPresent()) return ResponseEntity.notFound().build();
         return ResponseEntity.ok().body(mbDragon.get());
 
     }
@@ -157,7 +158,7 @@ public class DragonView {
 
         try {
             Optional<Dragon> mbDragon = dragonGetter.getById(dragonId);
-            if (mbDragon.isEmpty())
+            if (!mbDragon.isPresent())
                 return ResponseEntity.notFound().build();
 
             UpdateDragonRequest request = mapper.readValue(updateDragonRequestString, UpdateDragonRequest.class);
@@ -181,7 +182,7 @@ public class DragonView {
 
 
         Optional<Dragon> mbDragon = dragonGetter.getById(dragonId);
-        if (mbDragon.isEmpty())
+        if (!mbDragon.isPresent())
             return ResponseEntity.notFound().build();
 
 

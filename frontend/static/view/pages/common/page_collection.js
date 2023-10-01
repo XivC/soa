@@ -13,8 +13,6 @@ export class PageCollection extends Page {
 
 
     onCreate() {
-        super.onCreate()
-
         document.body.innerHTML = '<button id="create-button">Create</button>\n' +
             '<div class="card-container" id="cardContainer"></div>\n' +
             '<div class="loading" id="loadingIndicator">\n' +
@@ -38,6 +36,8 @@ export class PageCollection extends Page {
                 that.fetchMoreElements()
             }
         }, 100)
+
+        this.reload()
     }
 
     onDestroy() {

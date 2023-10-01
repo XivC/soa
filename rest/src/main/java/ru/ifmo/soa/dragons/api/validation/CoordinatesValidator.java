@@ -2,7 +2,6 @@ package ru.ifmo.soa.dragons.api.validation;
 
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.annotation.RequestScope;
 import ru.ifmo.soa.app.validation.Validator;
 import ru.ifmo.soa.dragons.model.Coordinates;
 

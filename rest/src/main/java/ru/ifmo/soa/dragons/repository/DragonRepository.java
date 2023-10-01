@@ -2,16 +2,14 @@ package ru.ifmo.soa.dragons.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import ru.ifmo.soa.app.db.DBConnectionManager;
-import ru.ifmo.soa.app.sql.filter.FilterSet;
-import ru.ifmo.soa.dragons.model.*;
-import ru.ifmo.soa.persons.model.Person;
 import ru.ifmo.soa.app.sql.SQLBuilder;
+import ru.ifmo.soa.app.sql.filter.FilterSet;
 import ru.ifmo.soa.app.sql.order.OrderSet;
+import ru.ifmo.soa.dragons.model.*;
 import ru.ifmo.soa.persons.model.Country;
+import ru.ifmo.soa.persons.model.Person;
 
-import javax.annotation.Resource;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.LinkedList;

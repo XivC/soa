@@ -1,6 +1,5 @@
 package ru.ifmo.soa.persons.service;
 
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ifmo.soa.app.service.ServiceError;
@@ -11,6 +10,7 @@ import ru.ifmo.soa.persons.model.Person;
 import ru.ifmo.soa.persons.repository.PersonRepository;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +27,7 @@ public class PersonCreator {
         Optional<Person> mbPerson = personRepository.getById(data.getPassportID());
 
         if (mbPerson.isPresent()){
-            throw new ValidationError(List.of(String.format("Person with passportID %s already exists", data.getPassportID())));
+            throw new ValidationError(Collections.singletonList((String.format("Person with passportID %s already exists", data.getPassportID()))));
         }
 
         Person person = Person.builder()

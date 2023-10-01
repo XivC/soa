@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import ru.ifmo.soa.app.service.ServiceError;
 import ru.ifmo.soa.app.validation.ValidatedData;
 import ru.ifmo.soa.app.validation.ValidationError;
-import ru.ifmo.soa.dragons.api.schema.CreateDragonRequest;
 import ru.ifmo.soa.dragons.api.schema.UpdateDragonRequest;
 import ru.ifmo.soa.dragons.model.Dragon;
 import ru.ifmo.soa.dragons.repository.DragonRepository;
@@ -14,8 +13,7 @@ import ru.ifmo.soa.persons.model.Person;
 import ru.ifmo.soa.persons.service.PersonGetter;
 
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class DragonUpdater {
@@ -32,7 +30,7 @@ public class DragonUpdater {
 
         if (data.getKillerId() != null){
             Optional<Person> mbPerson = personGetter.getById(data.getKillerId());
-            if (mbPerson.isEmpty()) throw new ValidationError(List.of(String.format("Killer with passportId %s not found", data.getKillerId())));
+            if (!mbPerson.isPresent()) throw new ValidationError(Collections.singletonList(String.format("Killer with passportId %s not found", data.getKillerId())));
             dragon.setKiller(mbPerson.get());
         }
         else {

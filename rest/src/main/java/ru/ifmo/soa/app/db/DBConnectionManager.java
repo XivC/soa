@@ -1,11 +1,8 @@
 package ru.ifmo.soa.app.db;
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.slf4j.Logger;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.ApplicationScope;
 
 import java.io.IOException;
 import java.io.InputStream;

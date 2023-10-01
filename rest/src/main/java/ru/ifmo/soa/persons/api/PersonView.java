@@ -9,16 +9,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ifmo.soa.app.service.ServiceError;
 import ru.ifmo.soa.app.validation.ValidatedData;
+import ru.ifmo.soa.app.validation.ValidationError;
 import ru.ifmo.soa.persons.api.schema.CreatePersonRequest;
 import ru.ifmo.soa.persons.api.schema.UpdatePersonRequest;
 import ru.ifmo.soa.persons.api.validation.CreatePersonRequestValidator;
 import ru.ifmo.soa.persons.api.validation.UpdatePersonRequestValidator;
-import ru.ifmo.soa.persons.service.PersonDeleter;
-import ru.ifmo.soa.persons.service.PersonUpdater;
-import ru.ifmo.soa.app.validation.ValidationError;
 import ru.ifmo.soa.persons.model.Person;
 import ru.ifmo.soa.persons.service.PersonCreator;
+import ru.ifmo.soa.persons.service.PersonDeleter;
 import ru.ifmo.soa.persons.service.PersonGetter;
+import ru.ifmo.soa.persons.service.PersonUpdater;
 
 import java.util.Optional;
 
@@ -68,7 +68,7 @@ public class PersonView {
     public ResponseEntity<?> getById(@PathVariable("passportId") final String passportId) throws ServiceError {
 
         Optional<Person> mbPerson = personGetter.getById(passportId);
-        if (mbPerson.isEmpty()) return ResponseEntity.notFound().build();
+        if (!mbPerson.isPresent()) return ResponseEntity.notFound().build();
         return ResponseEntity.ok().body(mbPerson.get());
 
     }
@@ -83,7 +83,7 @@ public class PersonView {
 
         try {
             Optional<Person> mbPerson = personGetter.getById(passportId);
-            if (mbPerson.isEmpty())
+            if (!mbPerson.isPresent())
                 return ResponseEntity.notFound().build();
 
             UpdatePersonRequest request = mapper.readValue(updatePersonRequestString, UpdatePersonRequest.class);
@@ -107,7 +107,7 @@ public class PersonView {
 
 
         Optional<Person> mbPerson = personGetter.getById(passportId);
-        if (mbPerson.isEmpty())
+        if (!mbPerson.isPresent())
             return ResponseEntity.notFound().build();
 
 

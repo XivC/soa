@@ -14,7 +14,7 @@ public class UpdatePersonRequestValidator implements Validator<UpdatePersonReque
 
         List<String> errors = new ArrayList<>();
 
-        if (req.getName() == null || req.getName().isBlank()) errors.add("Name can't be empty");
+        if (req.getName() == null || req.getName().trim().isEmpty()) errors.add("Name can't be empty");
         if (req.getHeight() != null && req.getHeight() <= 0) errors.add("Height must be greater than 0");
         if (req.getWeight() != null && req.getWeight() <= 0) errors.add("Height must be greater than 0");
         if (req.getNationality() == null) errors.add("Nationality required");

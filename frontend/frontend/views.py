@@ -13,13 +13,13 @@ def index_view(request):
 def forward_request(request, response_processor=lambda root: {}):
     # Extract request data
     DYBOV = "http://188.242.74.186:8080"
-    ME = "http://localhost:8080"
+    ME = "http://localhost:8080/rest"
     url = ME + request.path  # Replace with the URL of the other server
 
     headers = {k: str(v) for k, v in request.META.items() if k != 'HTTP_HOST'}
-    params = request.GET
+    params = request.GET.urlencode()
 
-    response = requests.request(request.method, url, headers=headers, params=params, data=request.body)
+    response = requests.request(request.method, url + '?' + params, headers=headers, data=request.body)
 
     try:
         root = ET.fromstring(response.content)

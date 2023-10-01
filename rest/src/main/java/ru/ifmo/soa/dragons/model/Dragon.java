@@ -2,7 +2,6 @@ package ru.ifmo.soa.dragons.model;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.*;
 import ru.ifmo.soa.persons.model.Person;

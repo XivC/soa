@@ -18,7 +18,7 @@ public class CreateDragonRequestValidator implements Validator<CreateDragonReque
 
         List<String> errors = new ArrayList<>();
 
-        if (req.getName() == null || req.getName().isBlank()) errors.add("Name can't be empty");
+        if (req.getName() == null || req.getName().trim().isEmpty()) errors.add("Name can't be empty");
         if (req.getCoordinates() == null) errors.add("Coordinates required");
             else  errors.addAll(coordinatesValidator.validate(req.getCoordinates()));
         if (req.getAge() != null && req.getAge() <= 0) errors.add("Age must be greater than 0");
