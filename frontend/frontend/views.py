@@ -26,9 +26,7 @@ def forward_request(request, response_processor=lambda root: {}):
         if 200 <= response.status_code < 300:
             body = response_processor(root)
         else:
-            body = {
-                'errors:': [i.text for i in root.findall('item')]
-            }
+            body = {'errors:': [i.text for i in root.findall('Error')]}
         json_resp = json.dumps(body, indent=4)
     except:
         json_resp = response.content
@@ -48,6 +46,14 @@ def make_array_processor(array_name, element_name):
     return processor
 
 
+def make_item_processor(item_name, element_name):
+    def processor(root):
+        xml_string = ET.tostring(root, encoding='unicode')
+        json_item = xmltodict.parse(xml_string)
+        return {item_name: json_item[element_name]}
+    return processor
+
+
 def dragons(request):
     if request.method == 'GET':
         return forward_request(request, response_processor=make_array_processor('dragons', 'Dragon'))
@@ -57,6 +63,6 @@ def dragons(request):
 
 def persons(request):
     if request.method == 'GET':
-        return forward_request(request, response_processor=make_array_processor('persons', 'Person'))
+        return forward_request(request, response_processor=make_item_processor('person', 'Person'))
     else:
         return forward_request(request)

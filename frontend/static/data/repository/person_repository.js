@@ -14,7 +14,7 @@ class PersonRepository {
                     item['name'],
                     item['height'],
                     item['weight'],
-                    item['passport-id'],
+                    item['passportID'],
                     item['nationality']
                 )
                 callback(person)
@@ -30,7 +30,7 @@ class PersonRepository {
                     'name': fields['name'],
                     'height': fields['height'],
                     'weight': fields['weight'],
-                    'passportId': fields['passportId'],
+                    'passportID': fields['passportID'],
                     'nationality': fields['nationality']
                 })
             },

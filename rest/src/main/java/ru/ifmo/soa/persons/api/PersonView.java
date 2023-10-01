@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.ifmo.soa.app.schema.ErrorResponse;
 import ru.ifmo.soa.app.service.ServiceError;
 import ru.ifmo.soa.app.validation.ValidatedData;
 import ru.ifmo.soa.app.validation.ValidationError;
@@ -95,7 +96,7 @@ public class PersonView {
         } catch (JsonProcessingException ex) {
             return ResponseEntity.badRequest().build();
         } catch (ValidationError error) {
-            return ResponseEntity.badRequest().body(error.getErrors());
+            return ResponseEntity.badRequest().body(new ErrorResponse(error.getErrors()));
         }
 
     }

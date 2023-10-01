@@ -8,7 +8,7 @@ class SOAApp extends App {
     constructor() {
         super()
         this.pushPage(new PageCollectionDragons(this))
-        //this.pushPage(new PageObjectPerson(this, null))
+        this.pushPage(new PageObjectPerson(this, null))
     }
 }
 

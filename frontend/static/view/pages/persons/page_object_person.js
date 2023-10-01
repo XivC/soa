@@ -8,7 +8,7 @@ export class PageObjectPerson extends PageObject {
     constructor(props, entity) {
         let fields = ['name', 'height', 'weight', 'nationality']
         if (entity == null) {
-            fields.push('passportId')
+            fields.push('passportID')
         }
         super(props, fields, entity);
     }
@@ -21,6 +21,7 @@ export class PageObjectPerson extends PageObject {
             const passportID = urlParams.get('passport-id')
             personRepository.getPerson(passportID, (entity) => {
                 this.entity = entity
+                this.onDestroy()
                 this.onCreate()
             })
         }

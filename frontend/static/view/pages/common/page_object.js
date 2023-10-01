@@ -11,12 +11,12 @@ export class PageObject extends Page {
 
     onCreate() {
         super.onCreate()
-        document.body.innerHTML = '<div class="" id="fieldsContainer"></div>\n' +
-            '<button id="save-button">Save</button>' +
-            '<button id="back-button">Back</button>' +
-            '<div class="loading" id="loadingIndicator" style="display: none;">\n' +
-            '    <div class="spinner"></div>\n' +
-            '</div>';
+        document.body.innerHTML = `<div class="" id="fieldsContainer"></div>
+            <button id="save-button">${this.entity == null ? 'Create' : 'Save changes'}</button>
+            <button id="back-button">Back</button>
+            <div class="loading" id="loadingIndicator" style="display: none;">
+                <div class="spinner"></div>
+            </div>`;
         document.getElementById("back-button").onclick = () => this.app.popPage()
         document.getElementById("save-button").onclick = () => {
             let fields = {}
