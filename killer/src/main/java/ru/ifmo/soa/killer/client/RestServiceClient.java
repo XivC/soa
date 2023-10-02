@@ -9,8 +9,11 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 import ru.ifmo.soa.killer.model.Dragon;
 import ru.ifmo.soa.killer.model.Person;
@@ -20,6 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -34,9 +40,19 @@ public class RestServiceClient {
         baseUrl = properties.getProperty("rest-service.base-url");
     }
 
+    private CloseableHttpClient getHttpClient() throws NoSuchAlgorithmException, KeyManagementException, KeyStoreException {
+        SSLContextBuilder builder = new SSLContextBuilder();
+        builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+                builder.build());
+
+        return HttpClients.custom().setSSLSocketFactory(
+                sslsf).build();
+    }
+
     public Optional<Dragon> getDragonById(Long dragonId) throws ClientError{
         String url = baseUrl + String.format("api/dragons/%s/", dragonId);
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+        try (CloseableHttpClient httpClient = getHttpClient()) {
 
             HttpGet httpGet = new HttpGet(url);
 
@@ -57,7 +73,7 @@ public class RestServiceClient {
         try {
 
 
-            try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            try (CloseableHttpClient httpClient = getHttpClient()) {
                 String dragonString = mapper.writeValueAsString(request);
                 String url = baseUrl + String.format("api/dragons/%s/?dragon=%s", dragon.getId(), URLEncoder.encode(dragonString, StandardCharsets.UTF_8));
                 HttpPut httpPut = new HttpPut(url);
@@ -68,14 +84,14 @@ public class RestServiceClient {
             }
 
 
-        } catch (IOException ex){
+        } catch (Exception ex){
             throw new ClientError();
         }
     }
 
     public Optional<Person> getPersonById(String passportId) throws ClientError{
         String url = baseUrl + String.format("api/persons/%s/", passportId);
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+        try (CloseableHttpClient httpClient = getHttpClient()) {
 
             HttpGet httpGet = new HttpGet(url);
 

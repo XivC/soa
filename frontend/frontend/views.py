@@ -32,7 +32,7 @@ def forward_request(request, response_processor=lambda root: {}):
             headers[key] = request.headers[key]
     params = request.GET.urlencode()
 
-    response = requests.request(request.method, url + '?' + params, headers=headers, data=request.body)
+    response = requests.request(request.method, url + '?' + params, headers=headers, data=request.body, verify=False)
 
     try:
         root = ET.fromstring(response.content)
