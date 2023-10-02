@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import java.util.List;
 
 @AllArgsConstructor
-@XmlRootElement(name = "Errors")
+@JacksonXmlRootElement(localName = "Errors")
 public class ErrorResponse {
     @JacksonXmlProperty(localName = "Error")
     @JacksonXmlElementWrapper(useWrapping = false)

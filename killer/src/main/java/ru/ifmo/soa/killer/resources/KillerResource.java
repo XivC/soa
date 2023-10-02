@@ -33,7 +33,7 @@ public class KillerResource {
 
     @POST
     @Path("dragons/{dragonId}/kill")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces("application/xml")
     public Response killDragon(@PathParam("dragonId") @NotNull Long dragonId) throws ClientError {
         Optional<Dragon> mbDragon = restServiceClient.getDragonById(dragonId);
 
