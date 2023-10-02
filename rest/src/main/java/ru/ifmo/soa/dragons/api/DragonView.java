@@ -177,7 +177,7 @@ public class DragonView {
 
     @DeleteMapping("/{dragonId}/")
     public ResponseEntity<?> delete(
-            @RequestParam("dragonId") Long dragonId
+            @PathVariable("dragonId") Long dragonId
     ) throws ServiceError {
 
 
