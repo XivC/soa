@@ -12,6 +12,7 @@ import ru.ifmo.soa.killer.client.RestServiceClient;
 import ru.ifmo.soa.killer.model.Person;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Provider
@@ -23,7 +24,13 @@ public class DummyAuthorization implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext containerRequestContext) throws IOException{
-        String passportId = containerRequestContext.getHeaders().get("authorization").get(0);
+        List<?> header = containerRequestContext.getHeaders().get("authorization");
+        String passportId = null;
+
+        if (header != null){
+            passportId = (String) header.get(0);
+        }
+
         try {
             if (passportId != null) {
                 Optional<Person> mbPerson = restServiceClient.getPersonById(passportId);
