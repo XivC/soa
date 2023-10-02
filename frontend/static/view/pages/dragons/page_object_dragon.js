@@ -12,7 +12,13 @@ export class PageObjectDragon extends PageObject {
         super.onCreate()
         document.body.insertAdjacentHTML('afterbegin', `<button id="kill-button">Kill</button>`)
         document.getElementById("kill-button").onclick = () => {
-            dragonRepository.killDragon(this.entity.id, authRepository.getUserId(), () => this.app.popPage())
+            dragonRepository.killDragon(this.entity.id, authRepository.getUserId(), (data, error) => {
+                if (data) {
+                    this.app.popPage()
+                } else {
+                    alert(error)
+                }
+            })
         }
     }
 
