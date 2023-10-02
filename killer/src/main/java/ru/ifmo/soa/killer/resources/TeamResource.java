@@ -2,10 +2,7 @@ package ru.ifmo.soa.killer.resources;
 
 import jakarta.inject.Inject;
 import jakarta.validation.constraints.NotNull;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
@@ -34,7 +31,7 @@ public class TeamResource {
     @Inject
     CaveService caveService;
 
-    @GET
+    @POST
     @Path("teams/create/{teamId}/{teamName}/{teamSize}/{startCaveId}")
     @Produces("application/xml")
     public Response killDragon(
