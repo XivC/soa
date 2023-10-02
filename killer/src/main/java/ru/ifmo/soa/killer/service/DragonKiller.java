@@ -10,6 +10,7 @@ import ru.ifmo.soa.killer.model.Person;
 import ru.ifmo.soa.killer.validation.ValidationError;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RequestScoped
@@ -20,7 +21,7 @@ public class DragonKiller {
 
     public Dragon kill(Dragon dragon, Person killer) throws ValidationError, ClientError {
 
-        if (dragon.getKiller() != null) throw new ValidationError(List.of(String.format("Dragon %s already killed", dragon.getId())));
+        if (Optional.ofNullable(dragon.getKiller()).map(p -> !p.getPassportID().isEmpty()).orElse(false)) throw new ValidationError(List.of(String.format("Dragon %s already killed", dragon.getId())));
 
         dragon.setKiller(killer);
         Optional<Dragon> mbUpdatedDragon = client.update(dragon);

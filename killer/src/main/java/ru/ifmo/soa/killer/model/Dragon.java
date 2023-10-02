@@ -20,9 +20,4 @@ public class Dragon {
     private DragonType type; //Поле не может быть null
     private DragonCharacter character; //Поле может быть null
     private Person killer; //Поле может быть null
-
-    public String getKillerId(){
-        if (killer == null) return null;
-        return killer.getPassportID();
-    }
 }

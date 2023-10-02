@@ -4,6 +4,8 @@ from django.http import HttpResponse
 import json
 import requests
 import xml.etree.ElementTree as ET
+import re
+import frontend.config as config
 
 
 def index_view(request):
@@ -11,12 +13,23 @@ def index_view(request):
 
 
 def forward_request(request, response_processor=lambda root: {}):
-    # Extract request data
-    DYBOV = "http://188.242.74.186:8080"
-    ME = "http://localhost:8080/rest"
-    url = ME + request.path  # Replace with the URL of the other server
+    urls = [
+        (r"dragons\/[0-9]*\/kill", config.KILLER_URL),
+        (r"teams/create", config.KILLER_URL),
+        (r".*", config.REST_URL)
+    ]
+    host = ''
+    for key, value in urls:
+        if re.findall(key, request.path):
+            host = value
+            break
+    url = host + request.path  # Replace with the URL of the other server
 
-    headers = {k: str(v) for k, v in request.META.items() if k != 'HTTP_HOST'}
+    required_headers = ['Authorization', 'Content-Type', 'Origin']
+    headers = {}
+    for key in required_headers:
+        if key in request.headers:
+            headers[key] = request.headers[key]
     params = request.GET.urlencode()
 
     response = requests.request(request.method, url + '?' + params, headers=headers, data=request.body)
@@ -26,7 +39,7 @@ def forward_request(request, response_processor=lambda root: {}):
         if 200 <= response.status_code < 300:
             body = response_processor(root)
         else:
-            body = {'errors:': [i.text for i in root.findall('Error')]}
+            body = {'errors': [i.text for i in root.findall('Error')]}
         json_resp = json.dumps(body, indent=4)
     except:
         json_resp = response.content
@@ -56,7 +69,10 @@ def make_item_processor(item_name, element_name):
 
 def dragons(request):
     if request.method == 'GET':
-        return forward_request(request, response_processor=make_array_processor('dragons', 'Dragon'))
+        if re.findall(r"dragons/[0-9]*/", request.path):
+            return forward_request(request, response_processor=make_item_processor('dragon', 'Dragon'))
+        else:
+            return forward_request(request, response_processor=make_array_processor('dragons', 'Dragon'))
     else:
         return forward_request(request)
 

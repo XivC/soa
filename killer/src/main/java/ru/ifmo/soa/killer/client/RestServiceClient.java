@@ -71,8 +71,6 @@ public class RestServiceClient {
         } catch (IOException ex){
             throw new ClientError();
         }
-
-
     }
 
     public Optional<Person> getPersonById(String passportId) throws ClientError{

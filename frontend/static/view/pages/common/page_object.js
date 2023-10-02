@@ -14,9 +14,12 @@ export class PageObject extends Page {
         document.body.innerHTML = `<div class="" id="fieldsContainer"></div>
             <button id="save-button">${this.entity == null ? 'Create' : 'Save changes'}</button>
             <button id="back-button">Back</button>
+            <button id="delete-button">Delete</button>
             <div class="loading" id="loadingIndicator" style="display: none;">
                 <div class="spinner"></div>
             </div>`;
+        document.getElementById("delete-button").style.display = this.entity == null ? 'none' : 'block';
+        document.getElementById("delete-button").onclick = () => this.onDeleteEntity();
         document.getElementById("back-button").onclick = () => this.app.popPage()
         document.getElementById("save-button").onclick = () => {
             let fields = {}
@@ -44,6 +47,8 @@ export class PageObject extends Page {
             <input id="${elementId}" type="text" value="${value}">`;
         container.appendChild(field)
     }
+
+    onDeleteEntity() {}
 
     onCreateEntity(fields) {}
 

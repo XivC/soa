@@ -3,6 +3,7 @@ import {PageCollection} from "../common/page_collection.js";
 import {FiltersComponent} from "../../components/filters.js";
 import {SortsComponent} from "../../components/sorts.js";
 import {PageObjectDragon} from "./page_object_dragon.js";
+import {PageObjectPerson} from "../persons/page_object_person.js";
 
 
 export class PageCollectionDragons extends PageCollection {
@@ -34,6 +35,11 @@ export class PageCollectionDragons extends PageCollection {
             fields,
             () => this.reload()
         )
+
+        document.body.insertAdjacentHTML('afterbegin', `<button id="create-person">Create person</button>`)
+        document.getElementById("create-person").onclick = () => {
+            this.app.pushPage(new PageObjectPerson(this.app, null))
+        }
     }
 
     fetchElements(page, callback) {
@@ -46,16 +52,17 @@ export class PageCollectionDragons extends PageCollection {
     }
 
     cardInnerHtml(item) {
-        return `
-        <p>Name: ${item.name}</p>
+        let html = `<p>Name: ${item.name}</p>
         <p>ID: ${item.id}</p>
         <p>Type: ${item.type}</p>
         <p>Age: ${item.age}</p>
         <p>Color: ${item.color}</p>
         <p>Coordinates: ${item.x}:${item.y}</p>
-        <p>Character: ${item.character}</p>
-        <p>Killer ID: ${item.killerId}</p>
-        `;
+        <p>Character: ${item.character}</p>`;
+        if (item.killerId !== null) {
+            html += `<p>Killer ID: <a href="/?passport-id=${item.killerId}">${item.killerId}</a></p>`;
+        }
+        return html;
     }
 
     navigateToItem(item) {

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ru.ifmo.soa.killer.model.*;
 
+import java.util.Optional;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -26,7 +28,7 @@ public class UpdateDragonRequest {
                 dragon.getColor(),
                 dragon.getType(),
                 dragon.getCharacter(),
-                dragon.getKillerId()
+                Optional.ofNullable(dragon.getKiller()).map(Person::getPassportID).orElse(null)
         );
     }
 

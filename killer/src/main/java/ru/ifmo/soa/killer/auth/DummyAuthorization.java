@@ -23,16 +23,18 @@ public class DummyAuthorization implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext containerRequestContext) throws IOException{
-        String passportId = (String) containerRequestContext.getProperty("Authorization");
-        if (passportId == null) containerRequestContext.abortWith(Response.status(401).build());
+        String passportId = containerRequestContext.getHeaders().get("authorization").get(0);
         try {
-            Optional<Person> mbPerson = restServiceClient.getPersonById(passportId);
-
-            if (mbPerson.isEmpty()) {
+            if (passportId != null) {
+                Optional<Person> mbPerson = restServiceClient.getPersonById(passportId);
+                if (mbPerson.isEmpty()) {
+                    containerRequestContext.abortWith(Response.status(401).build());
+                    return;
+                }
+                containerRequestContext.setProperty("person", mbPerson.get());
+            } else {
                 containerRequestContext.abortWith(Response.status(401).build());
-                return;
             }
-            containerRequestContext.setProperty("person", mbPerson.get());
 
         }
         catch (ClientError ex){

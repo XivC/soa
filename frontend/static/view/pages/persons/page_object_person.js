@@ -5,25 +5,18 @@ import {PageCollectionDragons} from "../dragons/page_collection_dragons.js";
 
 export class PageObjectPerson extends PageObject {
 
-    constructor(props, entity) {
+    constructor(app, entity) {
         let fields = ['name', 'height', 'weight', 'nationality']
         if (entity == null) {
             fields.push('passportID')
         }
-        super(props, fields, entity);
+        super(app, fields, entity);
     }
 
     onCreate() {
         super.onCreate()
-        const queryString = window.location.search
-        const urlParams = new URLSearchParams(queryString)
-        if (this.entity == null && urlParams.has('passport-id')) {
-            const passportID = urlParams.get('passport-id')
-            personRepository.getPerson(passportID, (entity) => {
-                this.entity = entity
-                this.onDestroy()
-                this.onCreate()
-            })
+        if (this.entity != null) {
+            authRepository.setUserId(this.entity.passportID)
         }
     }
 
@@ -38,6 +31,13 @@ export class PageObjectPerson extends PageObject {
             this.entity = entity
             authRepository.setUserId(entity.passportID)
             this.app.pushPage(new PageCollectionDragons(this))
+        })
+    }
+
+    onDeleteEntity() {
+        personRepository.deletePerson(this.entity.passportID, () => {
+            authRepository.setUserId('')
+            this.app.popPage()
         })
     }
 }

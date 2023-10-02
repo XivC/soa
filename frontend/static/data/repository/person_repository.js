@@ -3,9 +3,9 @@ import {request_crud} from "../../api/api.js";
 
 class PersonRepository {
 
-    getPerson(passportId, callback) {
+    getPerson(id, callback) {
         request_crud(
-            'persons/' + passportId,
+            `persons/${id}/`,
             {},
             'GET',
             (data) => {
@@ -41,7 +41,7 @@ class PersonRepository {
 
     updatePerson(id, fields, callback) {
         request_crud(
-            'persons/' + id,
+            `persons/${id}/`,
             {
                 'person': JSON.stringify({
                     'name': fields['name'],
@@ -51,6 +51,15 @@ class PersonRepository {
                 })
             },
             'PUT',
+            (_) => callback(true)
+        )
+    }
+
+    deletePerson(id, callback) {
+        request_crud(
+            `persons/${id}/`,
+            {},
+            'DELETE',
             (_) => callback(true)
         )
     }

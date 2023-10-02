@@ -1,6 +1,6 @@
 import {PageObject} from '../common/page_object.js'
 import {dragonRepository} from "../../../data/repository/dragon_repository.js";
-import {personRepository} from "../../../data/repository/person_repository.js";
+import {authRepository} from "../../../data/repository/auth_repository.js";
 
 export class PageObjectDragon extends PageObject {
 
@@ -9,7 +9,11 @@ export class PageObjectDragon extends PageObject {
     }
 
     onCreate() {
-        super.onCreate();
+        super.onCreate()
+        document.body.insertAdjacentHTML('afterbegin', `<button id="kill-button">Kill</button>`)
+        document.getElementById("kill-button").onclick = () => {
+            dragonRepository.killDragon(this.entity.id, authRepository.getUserId(), () => this.app.popPage())
+        }
     }
 
     onUpdateEntity(fields) {
@@ -18,5 +22,9 @@ export class PageObjectDragon extends PageObject {
 
     onCreateEntity(fields) {
         dragonRepository.createDragon(fields, () => this.app.popPage())
+    }
+
+    onDeleteEntity() {
+        dragonRepository.deleteDragon(this.entity.id, () => this.app.popPage())
     }
 }

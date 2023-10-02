@@ -3,6 +3,15 @@ import {request_crud} from "../../api/api.js";
 
 class DragonRepository {
 
+    getDragon(id, callback) {
+        request_crud(
+            `dragons/${id}/`,
+            {},
+            'GET',
+            (data) => callback(dragonMapper(data['dragon']))
+        )
+    }
+
     listDragons(page, filters, sorts, callback) {
         const limit = 5
         request_crud(
@@ -14,18 +23,7 @@ class DragonRepository {
                 'order': JSON.stringify(sorts)
             },
             'GET',
-            (data) => callback(data['dragons'].map((item) => new Dragon(
-                item['id'],
-                item['name'],
-                item['coordinates']['x'],
-                item['coordinates']['y'],
-                `${item['creationDate'][0]}:${item['creationDate'][1]}:${item['creationDate'][2]}`,
-                item['age'],
-                item['color'],
-                item['character'],
-                item['type'],
-                null
-            )))
+            (data) => callback(data['dragons'].map(dragonMapper))
         )
     }
 
@@ -70,6 +68,39 @@ class DragonRepository {
             (_) => callback(true)
         )
     }
+
+    deleteDragon(id, callback) {
+        request_crud(
+            `dragons/${id}/`,
+            {},
+            'DELETE',
+            (_) => callback(true)
+        )
+    }
+
+    killDragon(id, passportID, callback) {
+        request_crud(
+            `dragons/${id}/kill/`,
+            {},
+            'POST',
+            (_) => callback(true),
+            {'Authorization': passportID }
+        )
+    }
 }
+
+let dragonMapper = (item) => new Dragon(
+    item['id'],
+    item['name'],
+    item['coordinates']['x'],
+    item['coordinates']['y'],
+    `${item['creationDate'][0]}:${item['creationDate'][1]}:${item['creationDate'][2]}`,
+
+    item['age'],
+    item['color'],
+    item['character'],
+    item['type'],
+    item['killerId']
+)
 
 export let dragonRepository = new DragonRepository()
