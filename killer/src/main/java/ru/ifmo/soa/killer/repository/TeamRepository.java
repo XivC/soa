@@ -22,6 +22,7 @@ public class TeamRepository {
         String sql = "SELECT * FROM Teams LEFT JOIN Caves on Teams.start_cave_id = Caves.id WHERE Teams.id = ?";
         Connection connection = dbConnectionManager.getConnection();
         PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setLong(1, id);
         statement.execute();
         ResultSet resultSet = statement.getResultSet();
         Team team = null;
@@ -48,7 +49,7 @@ public class TeamRepository {
 
     private Team fromRow(ResultSet resultSet) throws SQLException{
 
-        Long id = resultSet.getLong("teams.id");
+        Long id = resultSet.getLong(1);
         String name = resultSet.getString("name");
         Integer size = resultSet.getInt("size");
         Long caveId = resultSet.getLong("start_cave_id");

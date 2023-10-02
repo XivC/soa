@@ -57,21 +57,23 @@ export class PageCollection extends Page {
         this.isFetching = true
         let pageWhenCalled = this.page
         let that = this
-        this.fetchElements(pageWhenCalled, (items) => {
+        this.fetchElements(pageWhenCalled, (items, error) => {
             if (that.page !== pageWhenCalled) return;
-            items.forEach((item) => {
-                const card = document.createElement("div");
-                card.classList.add("card");
-                card.innerHTML = this.cardInnerHtml(item)
-                card.onclick = () => this.navigateToItem(item)
-                that.cardContainer.appendChild(card);
-            });
-            if (items.length === 0) {
-                this.loadingIndicator.style.display = 'none'
-                this.hasReachedEnd = true
+            if (items) {
+                items.forEach((item) => {
+                    const card = document.createElement("div");
+                    card.classList.add("card");
+                    card.innerHTML = this.cardInnerHtml(item)
+                    card.onclick = () => this.navigateToItem(item)
+                    that.cardContainer.appendChild(card);
+                });
+                if (items.length === 0) {
+                    this.loadingIndicator.style.display = 'none'
+                    this.hasReachedEnd = true
+                }
+                this.page += 1
+                this.isFetching = false
             }
-            this.page += 1
-            this.isFetching = false
         })
     }
 

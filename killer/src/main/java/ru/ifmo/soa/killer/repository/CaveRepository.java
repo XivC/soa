@@ -21,6 +21,7 @@ public class CaveRepository {
         String sql = "SELECT * FROM Caves WHERE id = ?";
         Connection connection = dbConnectionManager.getConnection();
         PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setLong(1, id);
         statement.execute();
         ResultSet resultSet = statement.getResultSet();
         Cave cave = null;

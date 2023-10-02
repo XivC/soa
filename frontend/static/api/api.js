@@ -1,7 +1,7 @@
 // Create a new XMLHttpRequest object
 
 
-function request(host, path, params, headers, method, callback) {
+function request(host, path, params, headers, method, callback, onError) {
     const xhr = new XMLHttpRequest();
 
     let url = host + path;
@@ -23,12 +23,12 @@ function request(host, path, params, headers, method, callback) {
         console.log(data)
 
         if (xhr.status >= 200 && xhr.status < 300) {
-            callback(data)
+            callback(data, null)
         } else {
             if (data['errors'] !== undefined) {
-                alert('Operation completed with errors:\n' + data['errors'].join('\n'))
+                onError('Operation completed with errors:\n' + data['errors'].join('\n'))
             } else {
-                alert('Something went error, status ' + xhr.status)
+                onError('Something went error, status ' + xhr.status)
             }
         }
     };
@@ -39,6 +39,6 @@ function request(host, path, params, headers, method, callback) {
     xhr.send()
 }
 
-export function request_crud(path, params, method, callback, headers= {}) {
-    return request('http://localhost:8000/', path, params, headers, method, callback)
+export function request_crud(path, params, method, callback, headers= {}, onError = () => {}) {
+    return request('/', path, params, headers, method, callback, onError)
 }

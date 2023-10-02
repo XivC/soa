@@ -4,6 +4,7 @@ import {FiltersComponent} from "../../components/filters.js";
 import {SortsComponent} from "../../components/sorts.js";
 import {PageObjectDragon} from "./page_object_dragon.js";
 import {PageObjectPerson} from "../persons/page_object_person.js";
+import {PageObjectTeam} from "../teams/page_object_team.js";
 
 
 export class PageCollectionDragons extends PageCollection {
@@ -36,9 +37,35 @@ export class PageCollectionDragons extends PageCollection {
             () => this.reload()
         )
 
-        document.body.insertAdjacentHTML('afterbegin', `<button id="create-person">Create person</button>`)
+        document.body.insertAdjacentHTML(
+            'afterbegin',
+            `<button id="create-person">Create person</button>
+                <button id="count-by-type">Count by type</button>
+                <button id="sum-age">Sum age</button>`
+        )
         document.getElementById("create-person").onclick = () => {
             this.app.pushPage(new PageObjectPerson(this.app, null))
+        }
+        document.getElementById("count-by-type").onclick = () => {
+            let type = prompt("Available values : WATER, UNDERGROUND, AIR, FIRE");
+            if (type != null) {
+                dragonRepository.countByType(type, (sum, error) => {
+                    if (sum) {
+                        alert('count-by-type=' + sum)
+                    } else {
+                        alert(error)
+                    }
+                })
+            }
+        }
+        document.getElementById("sum-age").onclick = () => {
+            dragonRepository.sumAge((sum, error) => {
+                if (sum) {
+                    alert('sum-age=' + sum)
+                } else {
+                    alert(error)
+                }
+            })
         }
     }
 

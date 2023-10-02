@@ -1,5 +1,7 @@
 package ru.ifmo.soa.killer.resources;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import jakarta.inject.Inject;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
@@ -34,15 +36,15 @@ public class TeamResource {
     @POST
     @Path("teams/create/{teamId}/{teamName}/{teamSize}/{startCaveId}")
     @Produces("application/xml")
-    public Response killDragon(
+    public Response teamsCreate(
             @PathParam("teamId") @NotNull Long teamId,
             @PathParam("teamSize") @NotNull Integer teamSize,
             @PathParam("teamName") @NotNull String teamName,
             @PathParam("startCaveId") @NotNull Long startCaveId
-    ) throws ServiceError {
+    ) throws ServiceError, JsonProcessingException {
 
         if (teamSize <= 0) {
-            Response.status(400).entity(new ErrorResponse(List.of("Team size must be > 0"))).build();  // I am lazy =(
+            Response.status(400).entity(new XmlMapper().writeValueAsString(new ErrorResponse(List.of("Team size must be > 0")))).build();  // I am lazy =(
         }
 
 
@@ -56,7 +58,7 @@ public class TeamResource {
 
 
         } catch (ValidationError error) {
-            return Response.status(400).entity(new ErrorResponse(error.getErrors())).build();
+            return Response.status(400).entity(new XmlMapper().writeValueAsString(new ErrorResponse(error.getErrors()))).build();
         }
     }
 

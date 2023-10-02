@@ -17,14 +17,32 @@ export class PageObjectDragon extends PageObject {
     }
 
     onUpdateEntity(fields) {
-        dragonRepository.updateDragon(this.entity.id, fields, () => this.app.popPage())
+        dragonRepository.updateDragon(this.entity.id, fields, (data, error) => {
+            if (data) {
+                this.app.popPage()
+            } else {
+                alert(error)
+            }
+        })
     }
 
     onCreateEntity(fields) {
-        dragonRepository.createDragon(fields, () => this.app.popPage())
+        dragonRepository.createDragon(fields, (data, error) => {
+            if (data) {
+                this.app.popPage()
+            } else {
+                alert(error)
+            }
+        })
     }
 
     onDeleteEntity() {
-        dragonRepository.deleteDragon(this.entity.id, () => this.app.popPage())
+        dragonRepository.deleteDragon(this.entity.id, (data, error) => {
+            if (data) {
+                this.app.popPage()
+            } else {
+                alert(error)
+            }
+        })
     }
 }

@@ -8,23 +8,42 @@ class DragonRepository {
             `dragons/${id}/`,
             {},
             'GET',
-            (data) => callback(dragonMapper(data['dragon']))
+            (data) => callback(dragonMapper(data['dragon']), null),
+            {},
+            (error) => callback(null, error)
         )
     }
 
     listDragons(page, filters, sorts, callback) {
         const limit = 5
-        request_crud(
-            'dragons/',
-            {
-                'offset': page * limit,
-                'limit': limit,
-                'filter': JSON.stringify(filters),
-                'order': JSON.stringify(sorts)
-            },
-            'GET',
-            (data) => callback(data['dragons'].map(dragonMapper))
-        )
+        if (filters.length === 1 && filters[0].key === 'color') {
+            request_crud(
+                'dragons/filter-by-color/',
+                {
+                    'offset': page * limit,
+                    'limit': limit,
+                    'color': filters[0].value
+                },
+                'GET',
+                (data) => callback(data['dragons'].map(dragonMapper), null),
+                {},
+                (error) => callback(null, error)
+            )
+        } else {
+            request_crud(
+                'dragons/',
+                {
+                    'offset': page * limit,
+                    'limit': limit,
+                    'filter': JSON.stringify(filters),
+                    'order': JSON.stringify(sorts)
+                },
+                'GET',
+                (data) => callback(data['dragons'].map(dragonMapper), null),
+                {},
+                (error) => callback(null, error)
+            )
+        }
     }
 
     createDragon(fields, callback) {
@@ -44,7 +63,9 @@ class DragonRepository {
                 })
             },
             'POST',
-            (_) => callback(true)
+            (_) => callback(true, null),
+            {},
+            (error) => callback(null, error)
         )
     }
 
@@ -65,7 +86,9 @@ class DragonRepository {
                 })
             },
             'PUT',
-            (_) => callback(true)
+            (_) => callback(true, null),
+            {},
+            (error) => callback(null, error)
         )
     }
 
@@ -74,7 +97,9 @@ class DragonRepository {
             `dragons/${id}/`,
             {},
             'DELETE',
-            (_) => callback(true)
+            (_) => callback(true),
+            {},
+            (error) => (error) => callback(null, error)
         )
     }
 
@@ -84,7 +109,32 @@ class DragonRepository {
             {},
             'POST',
             (_) => callback(true),
-            {'Authorization': passportID }
+            {'Authorization': passportID },
+            (error) => callback(null, error)
+        )
+    }
+
+    countByType(type, callback) {
+        request_crud(
+            `dragons/count-by-type/`,
+            {
+                'type': type
+            },
+            'GET',
+            (data) => callback(data['sum']),
+            {},
+            (error) => callback(null, error)
+        )
+    }
+
+    sumAge(callback) {
+        request_crud(
+            `dragons/sum-age/`,
+            {},
+            'GET',
+            (data) => callback(data['sum']),
+            {},
+            (error) => callback(null, error)
         )
     }
 }

@@ -15,14 +15,22 @@ class SOAApp extends App {
         const urlParams = new URLSearchParams(queryString)
         if (urlParams.has('passport-id')) {
             const passportID = urlParams.get('passport-id')
-            personRepository.getPerson(passportID, (entity) => {
-                this.pushPage(new PageObjectPerson(this, entity))
+            personRepository.getPerson(passportID, (entity, error) => {
+                if (entity) {
+                    this.pushPage(new PageObjectPerson(this, entity))
+                } else {
+                    alert(error)
+                }
             })
         }
         if (urlParams.has('dragon-id')) {
             const dragonID = urlParams.get('dragon-id')
-            dragonRepository.getDragon(dragonID, (entity) => {
-                this.pushPage(new PageObjectDragon(this, entity))
+            dragonRepository.getDragon(dragonID, (entity, error) => {
+                if (entity) {
+                    this.pushPage(new PageObjectDragon(this, entity))
+                } else {
+                    alert(error)
+                }
             })
         }
 

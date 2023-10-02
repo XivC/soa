@@ -18,7 +18,9 @@ class PersonRepository {
                     item['nationality']
                 )
                 callback(person)
-            }
+            },
+            {},
+            (error) => callback(null, error)
         )
     }
 
@@ -35,7 +37,9 @@ class PersonRepository {
                 })
             },
             'POST',
-            (_) => callback(true)
+            (_) => callback(true),
+            {},
+            (error) => callback(null, error)
         )
     }
 
@@ -51,7 +55,9 @@ class PersonRepository {
                 })
             },
             'PUT',
-            (_) => callback(true)
+            (_) => callback(true),
+            {},
+            (error) => callback(null, error)
         )
     }
 
@@ -60,7 +66,9 @@ class PersonRepository {
             `persons/${id}/`,
             {},
             'DELETE',
-            (_) => callback(true)
+            (_) => callback(true),
+            {},
+            (error) => callback(null, error)
         )
     }
 }
