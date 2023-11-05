@@ -11,7 +11,7 @@
     <groupId>ru.ifmo</groupId>
     <artifactId>soa</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>rest</name>
     <description>rest</description>
     <properties>
