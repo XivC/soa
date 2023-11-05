@@ -1,5 +1,6 @@
 create-conf:
 	cp ctl/db.properties.keep ctl/db.properties
+	cp ctl/haproxy.cfg.keep ctl/haproxy.cfg
 
 create-conf-win:
 	copy .\ctl\db.properties.keep .\ctl\db.properties
