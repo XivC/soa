@@ -40,4 +40,5 @@ build/
 **/db.properties
 **/config.json
 **/haproxy.cfg
+**/services.json
 
