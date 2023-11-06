@@ -6,6 +6,30 @@ import requests
 import xml.etree.ElementTree as ET
 import re
 import frontend.config as config
+from django.conf import settings
+import requests
+import json
+
+REST_URL = ''
+
+def set_rest_service_url():
+    global REST_URL
+    url = f'{config.CONSUL_URL}/v1/agent/service/rest'
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        REST_URL = f'http://{data["Address"]}:{data["Port"]}/api'
+
+
+def locate_backend(service):
+    global REST_URL
+
+    if service == 'killer':
+        return config.KILLER_URL
+    if service == 'rest':
+        if not REST_URL:
+            set_rest_service_url()
+        return REST_URL
 
 
 def index_view(request):
@@ -14,9 +38,9 @@ def index_view(request):
 
 def forward_request(request, response_processor=lambda root: {}):
     urls = [
-        (r"dragons\/[0-9]*\/kill", config.KILLER_URL),
-        (r"teams\/", config.KILLER_URL),
-        (r".*", config.REST_URL),
+        (r"dragons\/[0-9]*\/kill", locate_backend('killer')),
+        (r"teams\/", locate_backend('killer')),
+        (r".*", locate_backend('rest')),
     ]
     host = ''
     for key, value in urls:
