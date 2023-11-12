@@ -1,0 +1,13 @@
+{
+  "node_name": "soa-1-ld",
+  "bind_addr": "0.0.0.0",
+  "client_addr": "0.0.0.0",
+  "bootstrap_expect": 1,
+  "server": true,
+  "log_level": "INFO",
+  "data_dir": "consul-data",
+  "enable_script_checks": true,
+  "ports": {
+      "http": 1456
+  }
+}
