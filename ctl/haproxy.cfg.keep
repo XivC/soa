@@ -33,3 +33,14 @@ backend rest_back
     balance roundrobin
     server server1 <rest-host-1> check
     server server2 <rest-host-2> check
+
+
+frontend killer_front
+    bind *:<rest-front-port>
+    stats uri /haproxy?stats
+    default_backend killer_back
+
+backend killer_back
+    balance roundrobin
+    server server1 <killer-host-1> check
+    server server2 <killer-host-2> check
