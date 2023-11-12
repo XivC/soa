@@ -1,14 +1,13 @@
 package ru.ifmo.soa.killer.auth;
 
 import jakarta.inject.Inject;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.container.PreMatching;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
-import ru.ifmo.soa.killer.client.ClientError;
 import ru.ifmo.soa.killer.client.RestServiceClient;
+import ru.ifmo.soa.killer.model.ClientError;
 import ru.ifmo.soa.killer.model.Person;
 
 import java.io.IOException;

@@ -3,9 +3,11 @@ package ru.ifmo.soa.killer.model;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.*;
 
+import javax.ejb.Remote;
+import javax.persistence.Entity;
 import java.io.Serializable;
 
-
+@Entity
 @Getter
 @Setter
 @Builder

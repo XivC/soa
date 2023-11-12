@@ -15,9 +15,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
+import ru.ifmo.soa.killer.model.ClientError;
 import ru.ifmo.soa.killer.model.Dragon;
 import ru.ifmo.soa.killer.model.Person;
-import ru.ifmo.soa.killer.schema.UpdateDragonRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +29,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 import java.util.Properties;
 
-@ApplicationScoped
+
 public class RestServiceClient {
 
     private static final String propertiesPath = "services.properties";
@@ -50,7 +50,7 @@ public class RestServiceClient {
                 sslsf).build();
     }
 
-    public Optional<Dragon> getDragonById(Long dragonId) throws ClientError{
+    public Optional<Dragon> getDragonById(Long dragonId) throws ClientError {
         String url = baseUrl + String.format("api/dragons/%s/", dragonId);
         try (CloseableHttpClient httpClient = getHttpClient()) {
 

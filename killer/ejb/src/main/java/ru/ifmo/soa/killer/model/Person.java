@@ -5,8 +5,10 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.*;
 
+import javax.persistence.Entity;
 import java.io.Serializable;
 
+@Entity
 @Getter
 @Setter
 @Builder

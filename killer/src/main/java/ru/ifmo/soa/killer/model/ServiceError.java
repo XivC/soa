@@ -1,4 +1,4 @@
-package ru.ifmo.soa.killer.service;
+package ru.ifmo.soa.killer.model;
 
 public class ServiceError extends Exception{
     public ServiceError(){

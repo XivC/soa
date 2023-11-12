@@ -1,4 +1,4 @@
-package ru.ifmo.soa.killer.schema;
+package ru.ifmo.soa.killer.client;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

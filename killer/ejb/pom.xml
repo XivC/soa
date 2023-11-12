@@ -4,11 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ru.ifmo.soa.killer</groupId>
-    <artifactId>killer</artifactId>
+    <groupId>ru.ifmo.soa</groupId>
+    <artifactId>killer-logic</artifactId>
     <version>1</version>
-    <name>killer</name>
-    <packaging>war</packaging>
+    <name>killer-logic</name>
+    <packaging>ejb</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -131,15 +131,26 @@
             <artifactId>ejb-http-client</artifactId>
             <version>6.2023.10</version>
         </dependency>
-        <!--        <dependency>-->
-<!--            <groupId>ru.ifmo.soa</groupId>-->
-<!--            <artifactId>killer-logic</artifactId>-->
-<!--            <version>1</version>-->
-<!--        </dependency>-->
     </dependencies>
+
 
     <build>
         <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ejb-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <ejbVersion>3.1</ejbVersion>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
