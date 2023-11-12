@@ -3,6 +3,7 @@ package ru.ifmo.soa.killer.client;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.http.HttpEntity;
@@ -29,15 +30,40 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 import java.util.Properties;
 
-
+@ApplicationScoped
 public class RestServiceClient {
 
     private static final String propertiesPath = "services.properties";
-    private final String baseUrl;
+    private final String consulUrl;
 
     public RestServiceClient(){
         Properties properties = readProperties();
-        baseUrl = properties.getProperty("rest-service.base-url");
+        consulUrl = properties.getProperty("consul.url");
+    }
+
+
+    public String getRestUrl() throws ClientError {
+
+        try (CloseableHttpClient httpClient = getHttpClient()) {
+
+            HttpGet httpGet = new HttpGet(consulUrl + "v1/agent/service/rest");
+
+            try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
+
+                String responseBody = EntityUtils.toString(response.getEntity());
+                JsonMapper mapper = new JsonMapper();
+                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                ConsulServiceResponse consulService = mapper.readValue(responseBody, ConsulServiceResponse.class);
+
+                return String.format("http://%s:%s/", consulService.address, consulService.port);
+
+
+            }
+        } catch (Exception e) {
+            throw new ClientError();
+        }
+
+
     }
 
     private CloseableHttpClient getHttpClient() throws NoSuchAlgorithmException, KeyManagementException, KeyStoreException {
@@ -51,7 +77,7 @@ public class RestServiceClient {
     }
 
     public Optional<Dragon> getDragonById(Long dragonId) throws ClientError {
-        String url = baseUrl + String.format("api/dragons/%s/", dragonId);
+        String url = getRestUrl() + String.format("api/dragons/%s/", dragonId);
         try (CloseableHttpClient httpClient = getHttpClient()) {
 
             HttpGet httpGet = new HttpGet(url);
@@ -75,7 +101,7 @@ public class RestServiceClient {
 
             try (CloseableHttpClient httpClient = getHttpClient()) {
                 String dragonString = mapper.writeValueAsString(request);
-                String url = baseUrl + String.format("api/dragons/%s/?dragon=%s", dragon.getId(), URLEncoder.encode(dragonString, StandardCharsets.UTF_8));
+                String url = getRestUrl() + String.format("api/dragons/%s/?dragon=%s", dragon.getId(), URLEncoder.encode(dragonString, StandardCharsets.UTF_8));
                 HttpPut httpPut = new HttpPut(url);
                 try (CloseableHttpResponse response = httpClient.execute(httpPut)) {
                     return  getEntity(response, Dragon.class);
@@ -90,7 +116,7 @@ public class RestServiceClient {
     }
 
     public Optional<Person> getPersonById(String passportId) throws ClientError{
-        String url = baseUrl + String.format("api/persons/%s/", passportId);
+        String url = getRestUrl() + String.format("api/persons/%s/", passportId);
         try (CloseableHttpClient httpClient = getHttpClient()) {
 
             HttpGet httpGet = new HttpGet(url);
