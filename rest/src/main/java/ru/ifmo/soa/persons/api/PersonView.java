@@ -7,12 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.ws.server.endpoint.annotation.Endpoint;
+import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
+import org.springframework.ws.server.endpoint.annotation.RequestPayload;
+import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import ru.ifmo.soa.app.schema.ErrorResponse;
+import ru.ifmo.soa.app.schema.SuccessResponse;
 import ru.ifmo.soa.app.service.ServiceError;
 import ru.ifmo.soa.app.validation.ValidatedData;
 import ru.ifmo.soa.app.validation.ValidationError;
-import ru.ifmo.soa.persons.api.schema.CreatePersonRequest;
-import ru.ifmo.soa.persons.api.schema.UpdatePersonRequest;
+import ru.ifmo.soa.dragons.api.schema.ListOfDragonsResponse;
+import ru.ifmo.soa.persons.api.converter.PersonConverter;
+import ru.ifmo.soa.persons.api.schema.*;
 import ru.ifmo.soa.persons.api.validation.CreatePersonRequestValidator;
 import ru.ifmo.soa.persons.api.validation.UpdatePersonRequestValidator;
 import ru.ifmo.soa.persons.model.Person;
@@ -21,11 +27,18 @@ import ru.ifmo.soa.persons.service.PersonDeleter;
 import ru.ifmo.soa.persons.service.PersonGetter;
 import ru.ifmo.soa.persons.service.PersonUpdater;
 
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+import java.util.List;
 import java.util.Optional;
 
-@RestController
-@RequestMapping(value = "/api/persons", produces = MediaType.APPLICATION_XML_VALUE )
+@Endpoint
 public class PersonView {
+
+    private static final String NAMESPACE_URI = "http://ru/ifmo/soa/";
+
+    @Autowired
+    PersonConverter personConverter;
 
     @Autowired
     CreatePersonRequestValidator createPersonRequestValidator;
@@ -45,76 +58,81 @@ public class PersonView {
     @Autowired
     PersonDeleter personDeleter;
 
-    @PostMapping(value = "/", produces = "application/xml")
-    public ResponseEntity<?> create(@RequestParam("person") String createPersonRequestString) throws ServiceError {
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "createPersonRequest")
+    @ResponsePayload
+    public JAXBElement<?> create(@RequestPayload CreatePersonRequest request) throws ServiceError {
 
-        ObjectMapper mapper = new ObjectMapper();
+
         try {
-            CreatePersonRequest request = mapper.readValue(createPersonRequestString, CreatePersonRequest.class);
             ValidatedData<CreatePersonRequest, CreatePersonRequestValidator> validatedData = new ValidatedData<>(request, createPersonRequestValidator);
             Person person = personCreator.create(validatedData);
-            return ResponseEntity.status(201).body(person);
+            return new JAXBElement<>(
+                    QName.valueOf("personResponse"),
+                    PersonResponse.class,
+                    personConverter.toResponse(person)
+            );
 
-        } catch (JsonProcessingException ex) {
-            return ResponseEntity.badRequest().build();
-        } catch (ValidationError error) {
-            return ResponseEntity.badRequest().body(error.getErrors());
+        }  catch (ValidationError error) {
+            return new ErrorResponse(error.getErrors()).asResponse();
         }
 
 
     }
 
 
-    @GetMapping(value = "/{passportId}", produces = "application/xml")
-    public ResponseEntity<?> getById(@PathVariable("passportId") final String passportId) throws ServiceError {
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getPersonRequest")
+    @ResponsePayload
+    public JAXBElement<?> getById(@RequestPayload GetPersonRequest request) throws ServiceError {
 
-        Optional<Person> mbPerson = personGetter.getById(passportId);
-        if (!mbPerson.isPresent()) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok().body(mbPerson.get());
+        Optional<Person> mbPerson = personGetter.getById(request.getPassportID());
+        if (!mbPerson.isPresent()) return new ErrorResponse(List.of("Not found")).asResponse();
+        return new JAXBElement<>(
+                QName.valueOf("personResponse"),
+                PersonResponse.class,
+                personConverter.toResponse(mbPerson.get())
+        );
 
     }
 
-    @PutMapping(value = "/{passportId}", produces = "application/xml")
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "updatePersonRequest")
+    @ResponsePayload
     public ResponseEntity<?> update(
-            @RequestParam("person") final String updatePersonRequestString,
-            @PathVariable("passportId") final String passportId
+            @RequestPayload UpdatePersonRequest request
     ) throws ServiceError {
 
-        ObjectMapper mapper = new ObjectMapper();
 
         try {
-            Optional<Person> mbPerson = personGetter.getById(passportId);
+            Optional<Person> mbPerson = personGetter.getById(request.getPassportID());
             if (!mbPerson.isPresent())
                 return ResponseEntity.notFound().build();
 
-            UpdatePersonRequest request = mapper.readValue(updatePersonRequestString, UpdatePersonRequest.class);
+
             ValidatedData<UpdatePersonRequest, UpdatePersonRequestValidator> validatedData = new ValidatedData<>(request, updatePersonRequestValidator);
 
             Person updated = personUpdater.update(validatedData, mbPerson.get());
 
             return ResponseEntity.ok().body(updated);
-        } catch (JsonProcessingException ex) {
-            return ResponseEntity.badRequest().build();
         } catch (ValidationError error) {
             return ResponseEntity.badRequest().body(new ErrorResponse(error.getErrors()));
         }
 
     }
 
-    @DeleteMapping(value = "/{passportId}", produces = "application/xml")
-    public ResponseEntity<?> delete(
-            @PathVariable("passportId") String passportId
-    ) throws ServiceError {
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "deletePersonRequest")
+    @ResponsePayload
+    public JAXBElement<?> delete(
+            @RequestPayload DeletePersonRequest request
+            ) throws ServiceError {
 
 
-        Optional<Person> mbPerson = personGetter.getById(passportId);
+        Optional<Person> mbPerson = personGetter.getById(request.getPassportID());
         if (!mbPerson.isPresent())
-            return ResponseEntity.notFound().build();
+            return new ErrorResponse(List.of("Not found")).asResponse();
 
 
         personDeleter.delete(mbPerson.get());
 
-        return ResponseEntity.noContent().build();
+        return new SuccessResponse(List.of("Deleted")).asResponse();
 
 
     }

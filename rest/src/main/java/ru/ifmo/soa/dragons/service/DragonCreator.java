@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.ifmo.soa.app.service.ServiceError;
 import ru.ifmo.soa.app.validation.ValidatedData;
 import ru.ifmo.soa.dragons.api.schema.CreateDragonRequest;
+import ru.ifmo.soa.dragons.model.Coordinates;
 import ru.ifmo.soa.dragons.model.Dragon;
 import ru.ifmo.soa.dragons.repository.DragonRepository;
 
@@ -27,7 +28,7 @@ public class DragonCreator {
                 .name(data.getName())
                 .character(data.getCharacter())
                 .type(data.getType())
-                .coordinates(data.getCoordinates())
+                .coordinates(Coordinates.builder().x(data.getCoordinates().getX()).y(data.getCoordinates().getY()).build())
                 .color(data.getColor())
                 .character(data.getCharacter())
                 .age(data.getAge())

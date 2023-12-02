@@ -1,11 +1,12 @@
 package ru.ifmo.soa.dragons.api.schema;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.ifmo.soa.dragons.model.Color;
+import ru.ifmo.soa.dragons.model.DragonCharacter;
+import ru.ifmo.soa.dragons.model.DragonType;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -18,10 +19,10 @@ import javax.xml.bind.annotation.XmlType;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@XmlRootElement(name = "sumResponse")
-public class SumResponse {
+@XmlRootElement(name="countByTypeRequest", namespace = "http://ru/ifmo/soa/")
+public class CountByTypeRequest {
 
+    DragonType type;
 
-    Integer sum;
 
 }

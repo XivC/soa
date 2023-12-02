@@ -15,6 +15,7 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import ru.ifmo.soa.app.schema.ErrorResponse;
+import ru.ifmo.soa.app.schema.SuccessResponse;
 import ru.ifmo.soa.app.service.ServiceError;
 import ru.ifmo.soa.app.sql.filter.Filter;
 import ru.ifmo.soa.app.sql.filter.InvalidFilter;
@@ -68,24 +69,25 @@ public class DragonView {
     @Autowired
     DragonConverter dragonConverter;
 
-//    @PostMapping(value = "/")
-//    public ResponseEntity<?> create(@RequestParam("dragon") String createDragonRequestString) throws ServiceError {
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//        try {
-//            CreateDragonRequest request = mapper.readValue(createDragonRequestString, CreateDragonRequest.class);
-//            ValidatedData<CreateDragonRequest, CreateDragonRequestValidator> validatedData = new ValidatedData<>(request, createDragonRequestValidator);
-//            Dragon dragon = dragonCreator.create(validatedData);
-//            return ResponseEntity.status(201).body(dragon);
-//
-//        } catch (JsonProcessingException ex) {
-//            return ResponseEntity.status(400).build();
-//        } catch (ValidationError error) {
-//            return ResponseEntity.status(400).body(new ErrorResponse(error.getErrors()));
-//        }
-//
-//
-//    }
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "createDragonRequest")
+    @ResponsePayload
+    public JAXBElement<?> create(@RequestPayload CreateDragonRequest request) throws ServiceError {
+
+        try {
+            ValidatedData<CreateDragonRequest, CreateDragonRequestValidator> validatedData = new ValidatedData<>(request, createDragonRequestValidator);
+            Dragon dragon = dragonCreator.create(validatedData);
+            return new JAXBElement<DragonResponse>(
+                    QName.valueOf("dragonResponse"),
+                    DragonResponse.class,
+                    dragonConverter.toResponse(dragon)
+            );
+
+        }  catch (ValidationError error) {
+            return new ErrorResponse(error.getErrors()).asResponse();
+        }
+
+
+    }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getDragonsRequest")
     @ResponsePayload
@@ -126,83 +128,96 @@ public class DragonView {
 
 
 
-//    @GetMapping(value = "/count-by-type/")
-//    public ResponseEntity<?> countByType(@RequestParam("type") DragonType type) throws ServiceError{
-//
-//        return ResponseEntity.ok().body(new SumResponse(dragonUtils.countDragonsByType(type)));
-//
-//    }
-//
-////    @GetMapping(value = "/filter-by-color/")
-////    public ResponseEntity<?> countByType(
-////            @RequestParam("color") Color color,
-////            @RequestParam(value = "limit", required = false) Integer limit,
-////            @RequestParam(value = "offset", required = false) Integer offset
-////    ) throws ServiceError {
-////
-////        return ResponseEntity.ok().body(new ListOfDragonsResponse(dragonUtils.filterByColor(color, limit, offset)));
-////
-////    }
-//
-//    @GetMapping(value = "/sum-age/")
-//    public ResponseEntity<?> sumAge() throws ServiceError {
-//
-//        return ResponseEntity.ok().body(new SumResponse(dragonUtils.sumAge()));
-//
-//    }
-//
-//
-//    @GetMapping(value = "/{dragonId}/")
-//    public ResponseEntity<?> getById(@PathVariable("dragonId") Long dragonId) throws ServiceError {
-//
-//        Optional<Dragon> mbDragon = dragonGetter.getById(dragonId);
-//        if (!mbDragon.isPresent()) return ResponseEntity.notFound().build();
-//        return ResponseEntity.ok().body(mbDragon.get());
-//
-//    }
-//
-//    @PutMapping(value = "/{dragonId}/")
-//    public ResponseEntity<?> update(
-//            @RequestParam("dragon")  final String updateDragonRequestString,
-//            @PathVariable("dragonId") Long dragonId
-//    ) throws ServiceError {
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//
-//        try {
-//            Optional<Dragon> mbDragon = dragonGetter.getById(dragonId);
-//            if (!mbDragon.isPresent())
-//                return ResponseEntity.notFound().build();
-//
-//            UpdateDragonRequest request = mapper.readValue(updateDragonRequestString, UpdateDragonRequest.class);
-//            ValidatedData<UpdateDragonRequest, UpdateDragonRequestValidator> validatedData = new ValidatedData<>(request, updateDragonRequestValidator);
-//
-//            Dragon updated = dragonUpdater.update(validatedData, mbDragon.get());
-//
-//            return ResponseEntity.ok().body(updated);
-//        } catch (JsonProcessingException ex) {
-//            return ResponseEntity.badRequest().build();
-//        } catch (ValidationError error) {
-//            return ResponseEntity.badRequest().body(new ErrorResponse(error.getErrors()));
-//        }
-//
-//    }
-//
-//    @DeleteMapping("/{dragonId}/")
-//    public ResponseEntity<?> delete(
-//            @PathVariable("dragonId") Long dragonId
-//    ) throws ServiceError {
-//
-//
-//        Optional<Dragon> mbDragon = dragonGetter.getById(dragonId);
-//        if (!mbDragon.isPresent())
-//            return ResponseEntity.notFound().build();
-//
-//
-//        dragonDeleter.delete(mbDragon.get());
-//
-//        return ResponseEntity.noContent().build();
-//
-//
-//    }
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "countByTypeRequest")
+    @ResponsePayload
+    public ResponseEntity<?> countByType(@RequestPayload CountByTypeRequest request) throws ServiceError{
+
+        return ResponseEntity.ok().body(new SumResponse(dragonUtils.countDragonsByType(request.getType())));
+
+    }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "filterByColorRequest")
+    @ResponsePayload
+    public JAXBElement<?> filterByColor(
+            @RequestPayload FilterByColorRequest request
+    ) throws ServiceError {
+
+        List<Dragon> dragons = dragonUtils.filterByColor(request.getColor(), request.getLimit(), request.getOffset());
+        return new JAXBElement<>(
+                QName.valueOf("ListOfDragonsResponse"),
+                ListOfDragonsResponse.class,
+                dragonConverter.toListResponse(dragons)
+        );
+
+    }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "sumAgeRequest")
+    @ResponsePayload
+    public SumResponse sumAge() throws ServiceError {
+
+        return new SumResponse(dragonUtils.sumAge());
+
+    }
+
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getDragonRequest")
+    @ResponsePayload
+    public JAXBElement<?> getById(@RequestPayload GetDragonRequest request) throws ServiceError {
+
+        Optional<Dragon> mbDragon = dragonGetter.getById(request.getId());
+        if (!mbDragon.isPresent()) return new ErrorResponse(List.of("Not found")).asResponse();
+        return new JAXBElement<DragonResponse>(
+                QName.valueOf("dragonResponse"),
+                DragonResponse.class,
+                dragonConverter.toResponse(mbDragon.get())
+        );
+
+    }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "updateDragonRequest")
+    @ResponsePayload
+    public JAXBElement<?> update(
+            @RequestPayload UpdateDragonRequest request
+    ) throws ServiceError {
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            Optional<Dragon> mbDragon = dragonGetter.getById(request.getId());
+            if (!mbDragon.isPresent())
+                return new ErrorResponse(List.of("Not found")).asResponse();
+
+            ValidatedData<UpdateDragonRequest, UpdateDragonRequestValidator> validatedData = new ValidatedData<>(request, updateDragonRequestValidator);
+
+            Dragon updated = dragonUpdater.update(validatedData, mbDragon.get());
+
+            return new JAXBElement<DragonResponse>(
+                    QName.valueOf("dragonResponse"),
+                    DragonResponse.class,
+                    dragonConverter.toResponse(updated)
+            );
+        }  catch (ValidationError error) {
+            return new ErrorResponse(error.getErrors()).asResponse();
+        }
+
+    }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "deleteDragonRequest")
+    @ResponsePayload
+    public JAXBElement<?> delete(
+            @RequestPayload DeleteDragonRequest request
+    ) throws ServiceError {
+
+
+        Optional<Dragon> mbDragon = dragonGetter.getById(request.getId());
+        if (!mbDragon.isPresent())
+            return new ErrorResponse(List.of("Not found")).asResponse();
+
+
+        dragonDeleter.delete(mbDragon.get());
+
+        return new SuccessResponse(List.of("Deleted")).asResponse();
+
+
+    }
 }

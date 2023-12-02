@@ -10,41 +10,11 @@ package ru.ifmo.soa.dragons.api.schema;
 
 import lombok.*;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDate;
 
 
-/**
- * <p>Java class for DragonResponse complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="DragonResponse"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
- *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *         &lt;element name="creationDate" type="{http://www.w3.org/2001/XMLSchema}dateTime"/&gt;
- *         &lt;element name="coordinates" type="{http://ru/ifmo/soa/}CoordinatesResponse"/&gt;
- *         &lt;element name="age" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
- *         &lt;element name="color" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *         &lt;element name="type" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *         &lt;element name="character" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *       &lt;/sequence&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
- * </pre>
- * 
- * 
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DragonResponse", propOrder = {
     "id",
@@ -61,6 +31,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
+@XmlRootElement(name="dragonResponse", namespace = "http://ru/ifmo/soa/")
 public class DragonResponse {
 
     protected long id;
