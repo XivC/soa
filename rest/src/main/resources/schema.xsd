@@ -1,0 +1,47 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://ru/ifmo/soa/"
+           targetNamespace="http://ru/ifmo/soa/"
+           elementFormDefault="qualified">
+
+
+    <xs:element name="getDragonsRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="filter" type="xs:string" nillable="true"/>
+                <xs:element name="order" type="xs:string" nillable="true"/>
+                <xs:element name="limit" type="xs:int" nillable="true"/>
+                <xs:element name="offset" type="xs:int" nillable="true"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+<!--    <xs:element name="GetDragonsResponse">-->
+<!--        <xs:complexType>-->
+<!--            <xs:sequence>-->
+<!--                <xs:element name="dragons" maxOccurs="unbounded" type="tns:DragonResponse"/>-->
+<!--            </xs:sequence>-->
+<!--        </xs:complexType>-->
+<!--    </xs:element>-->
+
+<!--    <xs:complexType name="CoordinatesResponse">-->
+<!--        <xs:sequence>-->
+<!--            <xs:element name="x" type="xs:int"/>-->
+<!--            <xs:element name="y" type="xs:long"/>-->
+<!--        </xs:sequence>-->
+<!--    </xs:complexType>-->
+
+<!--    <xs:complexType name="DragonResponse">-->
+<!--        <xs:sequence>-->
+<!--            <xs:element name="id" type="xs:long"/>-->
+<!--            <xs:element name="name" type="xs:string"/>-->
+<!--            <xs:element name="creationDate" type="xs:dateTime"/>-->
+<!--            <xs:element name="coordinates" type="tns:CoordinatesResponse"/>-->
+<!--            <xs:element name="age" type="xs:int"/>-->
+<!--            <xs:element name="color" type="xs:string"/>-->
+<!--            <xs:element name="type" type="xs:string"/>-->
+<!--            <xs:element name="character" type="xs:string"/>-->
+<!--            &lt;!&ndash;            <xs:element name="killer" type="xs:boolean"/>&ndash;&gt;-->
+<!--        </xs:sequence>-->
+<!--    </xs:complexType>-->
+
+</xs:schema>

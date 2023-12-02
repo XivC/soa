@@ -8,39 +8,34 @@
 
 package ru.ifmo.soa.dragons.api.schema;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "dragons"
+    "filter",
+    "order",
+    "limit",
+    "offset"
 })
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@XmlRootElement(name = "ListOfDragonsResponse")
-public class ListOfDragonsResponse {
+@XmlRootElement(name = "getDragonsRequest", namespace = "http://ru/ifmo/soa/")
+public class GetDragonsRequest {
 
-    @XmlElement(name = "DragonResponse")
-    protected List<DragonResponse> dragons;
-    public List<DragonResponse> getDragons() {
-        if (dragons == null) {
-            dragons = new ArrayList<DragonResponse>();
-        }
-        return this.dragons;
-    }
+    @XmlElement(name = "filter", required = true, nillable = false)
+    protected String filter;
+    @XmlElement(required = false, nillable = true)
+    protected String order;
+    @XmlElement(required = false, type = Integer.class, nillable = true)
+    protected Integer limit;
+    @XmlElement(required = false, type = Integer.class, nillable = true)
+    protected Integer offset;
 
 }
