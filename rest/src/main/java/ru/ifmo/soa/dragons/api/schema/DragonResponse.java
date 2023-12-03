@@ -9,9 +9,11 @@
 package ru.ifmo.soa.dragons.api.schema;
 
 import lombok.*;
+import ru.ifmo.soa.app.bullshit.LocalDateAdapter;
 import ru.ifmo.soa.persons.api.schema.PersonResponse;
 
 import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDate;
 
@@ -26,7 +28,7 @@ import java.time.LocalDate;
     "color",
     "type",
     "character",
-        "killer"
+        "killerId"
 })
 @Builder
 @NoArgsConstructor
@@ -41,6 +43,7 @@ public class DragonResponse {
     protected String name;
     @XmlElement(required = true)
     @XmlSchemaType(name = "dateTime")
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     protected LocalDate creationDate;
     @XmlElement(required = true)
     protected CoordinatesResponse coordinates;
@@ -51,8 +54,8 @@ public class DragonResponse {
     protected String type;
     @XmlElement(required = true)
     protected String character;
-    @XmlElement(nillable = true)
-    protected PersonResponse killer;
+    @XmlElement(required = true)
+    protected String killerId;
 
 
 }

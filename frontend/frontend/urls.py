@@ -24,7 +24,7 @@ urlpatterns = [
     path('', views.index_view, name='index'),
     re_path(r'dragons/*', views.dragons, name='dragons'),
     re_path(r'persons/*', views.persons, name='persons'),
-    re_path(r'teams/*', views.teams, name='persons')
+    re_path(r'teams/*', views.teams, name='teams')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 

@@ -96,24 +96,27 @@ public class PersonView {
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "updatePersonRequest")
     @ResponsePayload
-    public ResponseEntity<?> update(
+    public JAXBElement<?> update(
             @RequestPayload UpdatePersonRequest request
     ) throws ServiceError {
 
 
         try {
             Optional<Person> mbPerson = personGetter.getById(request.getPassportID());
-            if (!mbPerson.isPresent())
-                return ResponseEntity.notFound().build();
+            if (!mbPerson.isPresent()) return new ErrorResponse(List.of("Not found")).asResponse();
 
 
             ValidatedData<UpdatePersonRequest, UpdatePersonRequestValidator> validatedData = new ValidatedData<>(request, updatePersonRequestValidator);
 
             Person updated = personUpdater.update(validatedData, mbPerson.get());
 
-            return ResponseEntity.ok().body(updated);
+            return new JAXBElement<>(
+                    QName.valueOf("personResponse"),
+                    PersonResponse.class,
+                    personConverter.toResponse(updated)
+            );
         } catch (ValidationError error) {
-            return ResponseEntity.badRequest().body(new ErrorResponse(error.getErrors()));
+             return new ErrorResponse(error.getErrors()).asResponse();
         }
 
     }
