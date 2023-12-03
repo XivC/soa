@@ -9,6 +9,7 @@
 package ru.ifmo.soa.dragons.api.schema;
 
 import lombok.*;
+import ru.ifmo.soa.persons.api.schema.PersonResponse;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -49,6 +50,8 @@ public class DragonResponse {
     protected String type;
     @XmlElement(required = true)
     protected String character;
+    @XmlElement
+    protected PersonResponse killer;
 
 
 }
