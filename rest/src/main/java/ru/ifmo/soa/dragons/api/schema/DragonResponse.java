@@ -25,7 +25,8 @@ import java.time.LocalDate;
     "age",
     "color",
     "type",
-    "character"
+    "character",
+        "killer"
 })
 @Builder
 @NoArgsConstructor
@@ -50,7 +51,7 @@ public class DragonResponse {
     protected String type;
     @XmlElement(required = true)
     protected String character;
-    @XmlElement
+    @XmlElement(nillable = true)
     protected PersonResponse killer;
 
 
