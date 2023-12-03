@@ -4,6 +4,7 @@
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/demo" />
     <file type="web" url="file://$PROJECT_DIR$/killer" />
+    <file type="web" url="file://$PROJECT_DIR$/rest" />
   </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
@@ -18,8 +19,8 @@
     </option>
     <option name="ignoredFiles">
       <set>
-        <option value="$APPLICATION_CONFIG_DIR$/extensions/restservice/pom.xml" />
         <option value="$PROJECT_DIR$/rest/awdqawwadawdawd/pom.xml" />
+        <option value="$APPLICATION_CONFIG_DIR$/extensions/restservice/pom.xml" />
       </set>
     </option>
   </component>
