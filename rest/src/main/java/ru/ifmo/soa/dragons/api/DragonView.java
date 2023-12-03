@@ -130,9 +130,9 @@ public class DragonView {
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "countByTypeRequest")
     @ResponsePayload
-    public ResponseEntity<?> countByType(@RequestPayload CountByTypeRequest request) throws ServiceError{
+    public SumResponse countByType(@RequestPayload CountByTypeRequest request) throws ServiceError{
 
-        return ResponseEntity.ok().body(new SumResponse(dragonUtils.countDragonsByType(request.getType())));
+        return new SumResponse(dragonUtils.countDragonsByType(request.getType()));
 
     }
 

@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "ListOfDragonsResponse")
 public class ListOfDragonsResponse {
 
-    @XmlElement(name = "DragonResponse")
+    @XmlElement(name = "dragonResponse")
     protected List<DragonResponse> dragons;
     public List<DragonResponse> getDragons() {
         if (dragons == null) {

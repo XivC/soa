@@ -1,0 +1,9 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+				  xmlns:gs="http://ru/ifmo/soa/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <gs:{operation}>
+	  {content}
+      </gs:{operation}>
+   </soapenv:Body>
+</soapenv:Envelope>

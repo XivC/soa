@@ -115,7 +115,7 @@ public class DragonRepository {
 
     public Integer sumAge() throws SQLException{
 
-        String sql = "SELECT COUNT(age) FROM dragons";
+        String sql = "SELECT SUM(age) FROM dragons";
         Connection connection = dbConnectionManager.getConnection();
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.execute();

@@ -20,8 +20,6 @@ public class DragonConverter {
     @Autowired
     CoordinatesConverter coordinatesConverter;
 
-    @Autowired
-    PersonConverter personConverter;
 
     public DragonResponse toResponse(Dragon dragon){
         DragonResponse.DragonResponseBuilder builder =  DragonResponse.builder()
@@ -32,11 +30,10 @@ public class DragonConverter {
                 .creationDate(dragon.getCreationDate())
                 .name(dragon.getName())
                 .type(ObjectStringifier.perform(dragon.getType()))
-                .character(ObjectStringifier.perform(dragon.getCharacter()));
+                .character(ObjectStringifier.perform(dragon.getCharacter()))
+                .killerId(dragon.getKillerId());
 
-        if (dragon.getKiller() != null){
-            builder.killer(personConverter.toResponse(dragon.getKiller()));
-        }
+
         return builder.build();
     }
 
