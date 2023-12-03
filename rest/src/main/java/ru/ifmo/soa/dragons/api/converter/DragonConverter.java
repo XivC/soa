@@ -8,6 +8,7 @@ import ru.ifmo.soa.dragons.api.schema.DragonResponse;
 import ru.ifmo.soa.dragons.api.schema.ListOfDragonsResponse;
 import ru.ifmo.soa.dragons.model.Coordinates;
 import ru.ifmo.soa.dragons.model.Dragon;
+import ru.ifmo.soa.persons.api.converter.PersonConverter;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.List;
@@ -19,8 +20,11 @@ public class DragonConverter {
     @Autowired
     CoordinatesConverter coordinatesConverter;
 
+    @Autowired
+    PersonConverter personConverter;
+
     public DragonResponse toResponse(Dragon dragon){
-        return DragonResponse.builder()
+        DragonResponse.DragonResponseBuilder builder =  DragonResponse.builder()
                 .id(dragon.getId())
                 .coordinates(coordinatesConverter.toResponse(dragon.getCoordinates()))
                 .age(dragon.getAge())
@@ -28,8 +32,12 @@ public class DragonConverter {
                 .creationDate(dragon.getCreationDate())
                 .name(dragon.getName())
                 .type(ObjectStringifier.perform(dragon.getType()))
-                .character(ObjectStringifier.perform(dragon.getCharacter()))
-                .build();
+                .character(ObjectStringifier.perform(dragon.getCharacter()));
+
+        if (dragon.getKiller() != null){
+            builder.killer(personConverter.toResponse(dragon.getKiller()));
+        }
+        return builder.build();
     }
 
     public ListOfDragonsResponse toListResponse(List<Dragon> dragons){
