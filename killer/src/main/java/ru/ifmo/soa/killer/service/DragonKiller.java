@@ -21,9 +21,9 @@ public class DragonKiller {
 
     public Dragon kill(Dragon dragon, Person killer) throws ValidationError, ClientError {
 
-        if (Optional.ofNullable(dragon.getKiller()).map(p -> !p.getPassportID().isEmpty()).orElse(false)) throw new ValidationError(List.of(String.format("Dragon %s already killed", dragon.getId())));
+        if (Optional.ofNullable(dragon.getKillerId()).isPresent()) throw new ValidationError(List.of(String.format("Dragon %s already killed", dragon.getId())));
 
-        dragon.setKiller(killer);
+        dragon.setKillerId(killer.getPassportID());
         Optional<Dragon> mbUpdatedDragon = client.update(dragon);
 
         if (mbUpdatedDragon.isEmpty()) throw new ValidationError(List.of(String.format("Ooopsss looks like dragon %s not found", dragon.getId())));

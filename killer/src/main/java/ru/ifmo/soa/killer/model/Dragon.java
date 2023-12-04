@@ -19,5 +19,5 @@ public class Dragon {
     private Color color; //Поле может быть null
     private DragonType type; //Поле не может быть null
     private DragonCharacter character; //Поле может быть null
-    private Person killer; //Поле может быть null
+    private String killerId; //Поле может быть null
 }

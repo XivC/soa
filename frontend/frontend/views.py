@@ -260,11 +260,14 @@ def forward_request(request, response_processor=lambda root: {}):
     response = requests.request(request.method, url + '?' + params, headers=headers, data=request.body, verify=False)
 
     try:
-        root = ET.fromstring(response.content)
-        if 200 <= response.status_code < 300:
-            body = response_processor(root)
+        if response.status_code == 204:
+            body = {}
         else:
-            body = {'errors': [i.text for i in root.findall('Error')]}
+            root = ET.fromstring(response.content)
+            if 200 <= response.status_code < 300:
+                body = response_processor(root)
+            else:
+                body = {'errors': [i.text for i in root.findall('Error')]}
         json_resp = json.dumps(body, indent=4)
     except:
         json_resp = response.content

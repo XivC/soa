@@ -28,7 +28,7 @@ public class UpdateDragonRequest {
                 dragon.getColor(),
                 dragon.getType(),
                 dragon.getCharacter(),
-                Optional.ofNullable(dragon.getKiller()).map(Person::getPassportID).orElse(null)
+                dragon.getKillerId()
         );
     }
 

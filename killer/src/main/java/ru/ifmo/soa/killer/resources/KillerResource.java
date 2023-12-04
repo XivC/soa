@@ -1,5 +1,6 @@
 package ru.ifmo.soa.killer.resources;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import jakarta.inject.Inject;
 import jakarta.validation.constraints.NotNull;
@@ -34,7 +35,7 @@ public class KillerResource {
     @POST
     @Path("dragons/{dragonId}/kill")
     @Produces("application/xml")
-    public Response killDragon(@PathParam("dragonId") @NotNull Long dragonId) throws ClientError {
+    public Response killDragon(@PathParam("dragonId") @NotNull Long dragonId) throws ClientError, JsonProcessingException {
         Optional<Dragon> mbDragon = restServiceClient.getDragonById(dragonId);
 
         if (mbDragon.isEmpty()){
@@ -48,7 +49,8 @@ public class KillerResource {
             return Response.status(204).build();
         }
         catch (ValidationError error){
-            return Response.status(400).entity(new ErrorResponse(error.getErrors())).build();
+            XmlMapper m = new XmlMapper();
+            return Response.status(400).entity(m.writeValueAsString(new ErrorResponse(error.getErrors()))).build();
         } catch (Throwable e) {
             System.err.println(e);
             return Response.status(500).entity(e.toString()).build();
